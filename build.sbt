@@ -2,7 +2,7 @@ name := "scalatestplus-junit"
 
 organization := "org.scalatestplus"
 
-version := "1.0.0-SNAP3"
+version := "1.0.0-SNAP4"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -35,6 +35,28 @@ testOptions in Test :=
     Tests.Argument(TestFrameworks.ScalaTest,
       "-m", "org.scalatestplus.junit",
     ))
+
+enablePlugins(SbtOsgi)
+
+osgiSettings
+
+OsgiKeys.exportPackage := Seq(
+  "org.scalatestplus.junit.*"
+)
+
+OsgiKeys.importPackage := Seq(
+  "org.scalatest.*",
+  "org.scalactic.*", 
+  "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+  "*;resolution:=optional"
+)
+
+OsgiKeys.additionalHeaders:= Map(
+  "Bundle-Name" -> "ScalaTestPlusJUnit",
+  "Bundle-Description" -> "ScalaTest+JUnit is an open-source integration library between ScalaTest and JUnit for Scala projects.",
+  "Bundle-DocURL" -> "http://www.scalatest.org/",
+  "Bundle-Vendor" -> "Artima, Inc."
+)
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
