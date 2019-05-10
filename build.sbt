@@ -2,7 +2,7 @@ name := "scalatestplus-junit"
 
 organization := "org.scalatestplus"
 
-version := "1.0.0-SNAP5"
+version := "1.0.0-SNAP6"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -26,7 +26,7 @@ developers := List(
 crossScalaVersions := List("2.10.7", "2.11.12", "2.12.8", "2.13.0-RC1")
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.1.0-SNAP9",
+  "org.scalatest" %% "scalatest" % "3.1.0-SNAP10",
   "junit" % "junit" % "4.12"
 )
 
