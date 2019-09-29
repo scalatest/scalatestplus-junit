@@ -25,7 +25,7 @@ package org.scalatestplus.junit {
     import org.junit.runner.RunWith
 
     @RunWith(classOf[JUnitRunner])
-    class EasySuite extends FunSuite {
+    class EasySuite extends funsuite.AnyFunSuite {
 
       val runCount = 3
       val failedCount = 2
@@ -52,7 +52,7 @@ package org.scalatestplus.junit {
     // Blows up in beforeAll before any tests can be run.
     //
     @RunWith(classOf[JUnitRunner])
-    class KerblooeySuite extends FunSuite with BeforeAndAfterAll {
+    class KerblooeySuite extends funsuite.AnyFunSuite with BeforeAndAfterAll {
 
       override def beforeAll(): Unit = {
         throw new RuntimeException("kerblooey")
@@ -83,7 +83,7 @@ package org.scalatestplus.junit {
   import org.scalatestplus.junit.helpers.EasySuite
   import org.scalatestplus.junit.helpers.KerblooeySuite
 
-  class JUnitRunnerSuite extends FunSuite {
+  class JUnitRunnerSuite extends funsuite.AnyFunSuite {
 
     test("That EasySuite gets run by JUnit given its RunWith annotation") {
       val result = JUnitCore.runClasses(classOf[EasySuite])

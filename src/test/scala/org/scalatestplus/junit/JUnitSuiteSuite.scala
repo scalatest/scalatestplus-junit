@@ -54,7 +54,7 @@ import _root_.org.junit.Test
 
   import helpers._
 
-  class JUnitSuiteSuite extends FunSuite {
+  class JUnitSuiteSuite extends funsuite.AnyFunSuite {
 
     class MyReporter extends Reporter {
 

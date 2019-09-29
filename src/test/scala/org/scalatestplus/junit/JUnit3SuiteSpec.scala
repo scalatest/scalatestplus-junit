@@ -20,7 +20,7 @@ import SharedHelpers._
 import collection.immutable.TreeSet
 import helpers._
 
-class JUnit3SuiteSpec extends FunSpec {
+class JUnit3SuiteSpec extends funspec.AnyFunSpec {
 
   describe("A JUnit3Suite") {
     it("should return the test names in alphabetical order from testNames") {
