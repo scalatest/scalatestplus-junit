@@ -22,7 +22,8 @@ package org.scalatestplus.junit {
   // -m org.scalatest.junit when running the test target for this project.
   package helpers {
 
-    import org.junit.runner.RunWith
+    import org.junit.runner.{Description, RunWith}
+    import org.junit.runner.manipulation.{Filter => TestFilter}
 
     @RunWith(classOf[JUnitRunner])
     class EasySuite extends FunSuite {
@@ -74,6 +75,34 @@ package org.scalatestplus.junit {
         assert(1 === 2)
       }
     }
+
+    class NameFilter(namePattern: String) extends TestFilter {
+      override def shouldRun(description: Description): Boolean = {
+        description.getClassName().contains(namePattern)
+      }
+
+      override def describe(): String = this.toString
+    }
+
+    //
+    // Suite to be filtered out by the name filter
+    //
+    @RunWith(classOf[JUnitRunner])
+    class FilteredOutSuite extends FunSuite with BeforeAndAfterAll {
+      test("JUnit ran this OK!") {
+        assert(1 === 1)
+      }
+    }
+
+    //
+    // Suite not to be filtered by the name filter
+    //
+    @RunWith(classOf[JUnitRunner])
+    class FilteredInSuite extends FunSuite with BeforeAndAfterAll {
+      test("JUnit ran this OK!") {
+        assert(1 === 1)
+      }
+    }
   }
 
   import org.junit.runner.Description
@@ -82,6 +111,8 @@ package org.scalatestplus.junit {
   import org.junit.runner.notification.RunNotifier
   import org.scalatestplus.junit.helpers.EasySuite
   import org.scalatestplus.junit.helpers.KerblooeySuite
+  import org.scalatestplus.junit.helpers.{FilteredInSuite, FilteredOutSuite, NameFilter}
+  import scala.util.Try
 
   class JUnitRunnerSuite extends FunSuite {
 
@@ -136,6 +167,32 @@ package org.scalatestplus.junit {
       assert(result.getRunCount === kerblooeySuite.runCount) 
       assert(result.getFailureCount === kerblooeySuite.failedCount) 
       assert(result.getIgnoreCount === kerblooeySuite.ignoreCount)
+    }
+
+    test("Test a suite can be filtered by name" +
+      "as the runner implements filterable now")
+    {
+      val runNotifier =
+        new RunNotifier {
+          var ran: List[Description] = Nil
+          override def fireTestFinished(description: Description): Unit = {
+            ran = description :: ran
+          }
+        }
+
+      val runners = (new JUnitRunner(classOf[FilteredOutSuite])) ::
+                    (new JUnitRunner(classOf[FilteredInSuite])) :: Nil
+
+      val filter = new NameFilter("FilteredIn")
+      val filteredRunners = runners.flatMap(runner => Try{
+        runner.filter(filter)
+        runner
+      }.toOption.toList)
+
+      filteredRunners.foreach(_.run(runNotifier))
+      assert(runNotifier.ran.size === 1)
+      assert(runNotifier.ran.head.getDisplayName ===
+        "JUnit ran this OK!(org.scalatestplus.junit.helpers.FilteredInSuite)")
     }
   }
 }

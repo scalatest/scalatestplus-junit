@@ -20,6 +20,7 @@ import org.scalatest._
 import org.junit.runner.notification.RunNotifier
 import org.junit.runner.notification.Failure
 import org.junit.runner.Description
+import org.junit.runner.manipulation.{Filter => TestFilter, Filterable, NoTestsRemainException}
 
 /*
  I think that Stopper really should be a no-op, like it is, because the user has
@@ -56,7 +57,7 @@ import org.junit.runner.Description
  * @author Jon-Anders Teigen
  * @author Colin Howe
  */
-final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.junit.runner.Runner {
+final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.junit.runner.Runner with Filterable {
 
   private val canInstantiate = JUnitHelper.checkForPublicNoArgConstructor(suiteClass)
   require(canInstantiate, "Must pass an org.scalatest.Suite with a public no-arg constructor")
@@ -113,5 +114,10 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    *  @return the expected number of tests that will run when this suite is run
    */
   override def testCount() = suiteToRun.expectedTestCount(Filter())
+
+  override def filter(filter: TestFilter): Unit = {
+    if (!filter.shouldRun(getDescription)) throw new NoTestsRemainException
+  }
+
 }
 
