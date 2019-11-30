@@ -22,7 +22,7 @@ import org.scalatestplus.junit.junit4helpers._
 import org.junit.Test
 import org.junit.Ignore
 
-class JUnitSuiteSpec extends FunSpec {
+class JUnitSuiteSpec extends funspec.AnyFunSpec {
 
   describe("A JUnitSuite") {
     it("should return the test names in alphabetical order from testNames") {

@@ -28,7 +28,7 @@ import org.junit.runner.notification.RunNotifier
 // This means we don't have a way to really forward RunStarting and
 // RunCompleted reports either. But RunAborted and SuiteAborted events should be sent
 // out the door somehow, so we report them with yet another fireTestFailure.
-class RunNotifierSuite extends FunSuite {
+class RunNotifierSuite extends funsuite.AnyFunSuite {
 
   val ordinal = new Ordinal(99)
 

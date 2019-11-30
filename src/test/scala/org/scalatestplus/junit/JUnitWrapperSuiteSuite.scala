@@ -18,7 +18,7 @@ package org.scalatestplus.junit {
   import org.scalatest._
   import org.scalatest.events._
 
-  class JUnitWrapperSuiteSuite extends FunSuite {
+  class JUnitWrapperSuiteSuite extends funsuite.AnyFunSuite {
 
     class MyReporter extends Reporter {
 

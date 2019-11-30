@@ -18,7 +18,7 @@ package org.scalatestplus.junit
 import org.scalatest._
 import org.scalactic.source.Position
 
-class JUnitTestFailedErrorSpec extends FunSpec with Matchers with AssertionsForJUnit {
+class JUnitTestFailedErrorSpec extends funspec.AnyFunSpec with matchers.should.Matchers with AssertionsForJUnit {
 
   val baseLineNumber = Position.here.lineNumber
 

@@ -17,9 +17,8 @@ package org.scalatestplus.junit
 
 import org.scalatest._
 import _root_.junit.framework.AssertionFailedError
-import org.scalatest.WordSpec
 
-trait AssertionsForJUnit3SharedTests { this: WordSpec with AssertionsForJUnit =>
+trait AssertionsForJUnit3SharedTests { this: wordspec.AnyWordSpec with AssertionsForJUnit =>
 
   def fromAssertExpectInterceptAndFail(): Unit = {
 
@@ -100,7 +99,7 @@ trait AssertionsForJUnit3SharedTests { this: WordSpec with AssertionsForJUnit =>
   }
 }
 
-class AssertionsForJUnitWordSpec extends WordSpec with AssertionsForJUnit
+class AssertionsForJUnitWordSpec extends wordspec.AnyWordSpec with AssertionsForJUnit
   with AssertionsForJUnit3SharedTests {
 
   val throwAssertionFailedError = afterWord("throw AssertionFailedError")
