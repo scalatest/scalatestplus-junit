@@ -2,7 +2,7 @@ name := "junit-4.12"
 
 organization := "org.scalatestplus"
 
-version := "3.2.0.0-M2"
+version := "3.2.0.0-M4"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -26,11 +26,11 @@ developers := List(
 crossScalaVersions := List("2.10.7", "2.11.12", "2.12.10", "2.13.1")
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest-core" % "3.2.0-M2",
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.0-M2" % "test",
-  "org.scalatest" %% "scalatest-funspec" % "3.2.0-M2" % "test",
-  "org.scalatest" %% "scalatest-funsuite" % "3.2.0-M2" % "test",
-  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.0-M2" % "test",
+  "org.scalatest" %% "scalatest-core" % "3.2.0-M4",
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.0-M4" % "test",
+  "org.scalatest" %% "scalatest-funspec" % "3.2.0-M4" % "test",
+  "org.scalatest" %% "scalatest-funsuite" % "3.2.0-M4" % "test",
+  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.0-M4" % "test",
   "junit" % "junit" % "4.12"
 )
 
