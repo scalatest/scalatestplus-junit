@@ -47,7 +47,7 @@ private[junit] object JUnitHelper {
     val decodedTestText = scala.reflect.NameTransformer.decode(testText)
     val formattedText =
       if (includeIcon) {
-        val testSucceededIcon = Resources.testSucceededIconChar
+        val testSucceededIcon = Resources.testSucceededIconChar()
         ("  " * (if (level == 0) 0 else (level - 1))) + Resources.iconPlusShortName(testSucceededIcon, decodedTestText)
       }
       else {
@@ -59,7 +59,7 @@ private[junit] object JUnitHelper {
   def checkForPublicNoArgConstructor(clazz: java.lang.Class[_]) = {
 
     try {
-      val constructor = clazz.getConstructor(new Array[java.lang.Class[T] forSome { type T }](0): _*)
+      val constructor = clazz.getConstructor(new Array[java.lang.Class[_]](0): _*)
 
       Modifier.isPublic(constructor.getModifiers)
     }
