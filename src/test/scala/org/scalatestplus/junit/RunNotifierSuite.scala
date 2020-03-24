@@ -33,16 +33,15 @@ class RunNotifierSuite extends funsuite.AnyFunSuite {
   val ordinal = new Ordinal(99)
 
   test("report(TestStarting) generates a fireTestStarted invocation") {
-
-    val runNotifier =
-      new RunNotifier {
-        var fireTestStartedInvocationCount = 0
-        var passedDesc: Option[Description] = None
-        override def fireTestStarted(description: Description): Unit = {
-          fireTestStartedInvocationCount += 1
-          passedDesc = Some(description)
-        }
+    class MyRunNotifier extends RunNotifier {
+      var fireTestStartedInvocationCount = 0
+      var passedDesc: Option[Description] = None
+      override def fireTestStarted(description: Description): Unit = {
+        fireTestStartedInvocationCount += 1
+        passedDesc = Some(description)
       }
+    }
+    val runNotifier = new MyRunNotifier
 
     import scala.language.reflectiveCalls
 
@@ -60,16 +59,15 @@ class RunNotifierSuite extends funsuite.AnyFunSuite {
   }
 
   test("report(TestFailed) generates a fireTestFailure invocation") {
-
-    val runNotifier =
-      new RunNotifier {
-        var methodInvocationCount = 0
-        var passed: Option[Failure] = None
-        override def fireTestFailure(failure: Failure): Unit = {
-          methodInvocationCount += 1
-          passed = Some(failure)
-        }
+    class MyRunNotifier extends RunNotifier {
+      var methodInvocationCount = 0
+      var passed: Option[Failure] = None
+      override def fireTestFailure(failure: Failure): Unit = {
+        methodInvocationCount += 1
+        passed = Some(failure)
       }
+    }
+    val runNotifier = new MyRunNotifier 
 
     val reporter = new RunNotifierReporter(runNotifier)
     val exception = new IllegalArgumentException
@@ -83,16 +81,15 @@ class RunNotifierSuite extends funsuite.AnyFunSuite {
   }
 
   test("report(TestSucceeded) generates a fireTestFinished invocation") {
-
-    val runNotifier =
-      new RunNotifier {
-        var methodInvocationCount = 0
-        var passed: Option[Description] = None
-        override def fireTestFinished(description: Description): Unit = {
-          methodInvocationCount += 1
-          passed = Some(description)
-        }
+    class MyRunNotifier extends RunNotifier {
+      var methodInvocationCount = 0
+      var passed: Option[Description] = None
+      override def fireTestFinished(description: Description): Unit = {
+        methodInvocationCount += 1
+        passed = Some(description)
       }
+    }
+    val runNotifier = new MyRunNotifier
 
     import scala.language.reflectiveCalls
 
@@ -104,16 +101,15 @@ class RunNotifierSuite extends funsuite.AnyFunSuite {
   }
 
   test("report(TestIgnored) generates a fireTestIgnored invocation") {
-
-    val runNotifier =
-      new RunNotifier {
-        var methodInvocationCount = 0
-        var passed: Option[Description] = None
-        override def fireTestIgnored(description: Description): Unit = {
-          methodInvocationCount += 1
-          passed = Some(description)
-        }
+    class MyRunNotifier extends RunNotifier {
+      var methodInvocationCount = 0
+      var passed: Option[Description] = None
+      override def fireTestIgnored(description: Description): Unit = {
+        methodInvocationCount += 1
+        passed = Some(description)
       }
+    }
+    val runNotifier = new MyRunNotifier
 
     import scala.language.reflectiveCalls
 
@@ -134,16 +130,15 @@ class RunNotifierSuite extends funsuite.AnyFunSuite {
 
   // fireTestFailure is the best we could do given the RunNotifier interface
   test("report(SuiteAborted) generates a fireTestFailure invocation") {
-
-    val runNotifier =
-      new RunNotifier {
-        var methodInvocationCount = 0
-        var passed: Option[Failure] = None
-        override def fireTestFailure(failure: Failure): Unit = {
-          methodInvocationCount += 1
-          passed = Some(failure)
-        }
+    class MyRunNotifier extends RunNotifier {
+      var methodInvocationCount = 0
+      var passed: Option[Failure] = None
+      override def fireTestFailure(failure: Failure): Unit = {
+        methodInvocationCount += 1
+        passed = Some(failure)
       }
+    }
+    val runNotifier = new MyRunNotifier
 
     import scala.language.reflectiveCalls
 
@@ -169,16 +164,15 @@ class RunNotifierSuite extends funsuite.AnyFunSuite {
 
   // fireTestFailure is the best we could do given the RunNotifier interface
   test("report(RunAborted) generates a fireTestFailure invocation") {
-
-    val runNotifier =
-      new RunNotifier {
-        var methodInvocationCount = 0
-        var passed: Option[Failure] = None
-        override def fireTestFailure(failure: Failure): Unit = {
-          methodInvocationCount += 1
-          passed = Some(failure)
-        }
+    class MyRunNotifier extends RunNotifier {
+      var methodInvocationCount = 0
+      var passed: Option[Failure] = None
+      override def fireTestFailure(failure: Failure): Unit = {
+        methodInvocationCount += 1
+        passed = Some(failure)
       }
+    }
+    val runNotifier = new MyRunNotifier
 
     val reporter = new RunNotifierReporter(runNotifier)
     val exception = new IllegalArgumentException

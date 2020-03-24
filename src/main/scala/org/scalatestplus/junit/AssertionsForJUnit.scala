@@ -95,7 +95,7 @@ import org.scalatest.exceptions.{StackDepthException, TestCanceledException}
  *
  * @author Bill Venners
  */
-trait AssertionsForJUnit extends Assertions {
+trait AssertionsForJUnit extends VersionSpecificAssertionsForJUnit {
 
   private[org] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, differences: scala.collection.immutable.IndexedSeq[String]): Throwable = {
     new JUnitTestFailedError(optionalMessage, optionalCause, pos, None)
@@ -116,16 +116,6 @@ trait AssertionsForJUnit extends Assertions {
     }
   }
 
-  import scala.language.experimental.macros
-
-  override def assert(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsForJUnitMacro.assert
-
-  override def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsForJUnitMacro.assertWithClue
-
-  override def assume(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsForJUnitMacro.assume
-
-  override def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsForJUnitMacro.assumeWithClue
-  
  /*
   private[scalatest] override def newAssertionFailedException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable = {
 
@@ -222,6 +212,9 @@ object AssertionsForJUnit extends AssertionsForJUnit {
       Succeeded
     }
 
+    def macroAssert(bool: Bool, clue: Any, pos: source.Position): Assertion =
+      macroAssert(bool, clue, bool.prettifier, pos)
+
     /**
       * Assume that the passed in <code>Bool</code> is <code>true</code>, else throw <code>TestCanceledException</code>.
       *
@@ -236,6 +229,9 @@ object AssertionsForJUnit extends AssertionsForJUnit {
       }
       Succeeded
     }
+
+    def macroAssume(bool: Bool, clue: Any, pos: source.Position): Assertion =
+      macroAssume(bool, clue, bool.prettifier, pos)
   }
 
   /**

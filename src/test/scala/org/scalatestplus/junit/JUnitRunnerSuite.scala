@@ -105,15 +105,15 @@ package org.scalatestplus.junit {
     test("a test failure is reported due to an exception thrown from " +
          "beforeAll when JUnitRunner.run is called directly")
     {
-      val runNotifier =
-        new RunNotifier {
-          var methodInvocationCount = 0
-          var passed: Option[Failure] = None
-          override def fireTestFailure(failure: Failure): Unit = {
-            methodInvocationCount += 1
-            passed = Some(failure)
-          }
+      class MyRunNotifier extends RunNotifier {
+        var methodInvocationCount = 0
+        var passed: Option[Failure] = None
+        override def fireTestFailure(failure: Failure): Unit = {
+          methodInvocationCount += 1
+          passed = Some(failure)
         }
+      }
+      val runNotifier = new MyRunNotifier
 
       (new JUnitRunner(classOf[KerblooeySuite])).run(runNotifier)
 
