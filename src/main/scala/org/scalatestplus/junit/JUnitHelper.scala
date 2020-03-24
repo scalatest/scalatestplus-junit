@@ -23,7 +23,7 @@ import org.scalatest.{Suite, TagAnnotation}
 private[junit] object JUnitHelper {
 
   def mergeMap[A, B](ms: List[Map[A, B]])(f: (B, B) => B): Map[A, B] =
-    (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
+    (for (m <- ms; kv <- m) yield kv).foldLeft(Map[A, B]()) { (a, kv) =>
       a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
     }
 
