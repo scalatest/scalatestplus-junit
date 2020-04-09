@@ -5,16 +5,19 @@ import org.scalatest.{Assertions, AssertionsMacro}
 import org.scalatest.compatible.Assertion
 
 trait VersionSpecificAssertionsForJUnit extends Assertions {
-  inline override def assert(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  // https://github.com/lampepfl/dotty/pull/8601#pullrequestreview-380646858
+  implicit object UseJUnitAssertions
+
+  inline def assert(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position, use: UseJUnitAssertions.type): Assertion =
     ${ AssertionsForJUnitMacro.assert('{condition}, '{prettifier}, '{pos}, '{""}) }
 
-  inline override def assert(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assert(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position, use: UseJUnitAssertions.type): Assertion =
     ${ AssertionsForJUnitMacro.assert('{condition}, '{prettifier}, '{pos}, '{clue}) }
 
-  inline override def assume(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assume(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position, use: UseJUnitAssertions.type): Assertion =
     ${ AssertionsForJUnitMacro.assume('{condition}, '{prettifier}, '{pos}, '{""}) }
 
-  inline override def assume(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assume(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position, use: UseJUnitAssertions.type): Assertion =
     ${ AssertionsForJUnitMacro.assume('{condition}, '{prettifier}, '{pos}, '{clue}) }
 
 }
