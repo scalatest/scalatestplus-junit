@@ -23,7 +23,19 @@ developers := List(
   )
 )
 
-crossScalaVersions := List("2.10.7", "2.11.12", "2.12.10", "2.13.1")
+crossScalaVersions := List(
+  "2.10.7", "2.11.12", "2.12.10", "2.13.1",
+  "0.22.0", "0.23.0", "0.24.0-RC1"
+)
+
+/** Add src/main/scala-{2|3} to Compile / unmanagedSourceDirectories */
+Compile / unmanagedSourceDirectories ++= {
+  val sourceDir = (Compile / sourceDirectory).value
+  CrossVersion.partialVersion(scalaVersion.value).map {
+    case (0 | 3, _) => sourceDir / "scala-3"
+    case (n, _) => sourceDir / s"scala-$n"
+  }
+}
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest-core" % "3.2.0-M4",
@@ -33,6 +45,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.0-M4" % "test",
   "junit" % "junit" % "4.12"
 )
+Test / scalacOptions ++= (if (isDotty.value) Seq("-language:implicitConversions") else Nil)
 
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 import scala.xml.transform.{RewriteRule, RuleTransformer}
