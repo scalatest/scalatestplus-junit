@@ -3,12 +3,12 @@ ScalaTest + JUnit provides integration support between ScalaTest and JUnit.
 
 **Usage**
 
-To use it for ScalaTest 3.1.2 and JUnit 4.12.x: 
+To use it for ScalaTest 3.2.0 and JUnit 4.12.x: 
 
 SBT: 
 
 ```
-libraryDependencies += "org.scalatestplus" %% "junit-4-12" % "3.1.2.0" % "test"
+libraryDependencies += "org.scalatestplus" %% "junit-4-12" % "3.2.0.0" % "test"
 ```
 
 Maven: 
@@ -17,7 +17,7 @@ Maven:
 <dependency>
   <groupId>org.scalatestplus</groupId>
   <artifactId>junit-4-12</artifactId>
-  <version>3.1.2.0</version>
+  <version>3.2.0.0</version>
   <scope>test</scope>
 </dependency>
 ```
