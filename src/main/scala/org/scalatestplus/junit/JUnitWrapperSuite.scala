@@ -85,7 +85,7 @@ class JUnitWrapperSuite(junitClassName: String, loader: ClassLoader) extends Sui
    * @return number of expected test count
    */
   override def expectedTestCount(filter: Filter): Int = {
-    getRequest.getRunner.getDescription.testCount
+    getRequest().getRunner.getDescription.testCount
   }
 
   /**
