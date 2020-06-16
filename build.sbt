@@ -106,7 +106,3 @@ publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
 
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
-
-pgpSecretRing := file((Path.userHome / ".gnupg" / "secring.gpg").getAbsolutePath)
-
-pgpPassphrase := None
