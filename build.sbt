@@ -105,4 +105,14 @@ publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
 
+pomExtra := (
+  <scm>
+    <url>https://github.com/scalatest/scalatestplus-junit</url>
+    <connection>scm:git:git@github.com:scalatest/scalatestplus-junit.git</connection>
+    <developerConnection>
+      scm:git:git@github.com:scalatest/scalatestplus-junit.git
+    </developerConnection>
+  </scm>
+)
+
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
