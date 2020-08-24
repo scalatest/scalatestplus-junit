@@ -1,4 +1,4 @@
-name := "junit-4.12"
+name := "junit-4.13"
 
 organization := "org.scalatestplus"
 
@@ -42,7 +42,7 @@ Compile / unmanagedSourceDirectories ++= {
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest-core" % "3.2.2",
-  "junit" % "junit" % "4.12", 
+  "junit" % "junit" % "4.13", 
   "org.scalatest" %% "scalatest-wordspec" % "3.2.2" % "test", 
   "org.scalatest" %% "scalatest-funspec" % "3.2.2" % "test", 
   "org.scalatest" %% "scalatest-funsuite" % "3.2.2" % "test", 
