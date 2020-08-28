@@ -1,4 +1,4 @@
-name := "junit-4.12"
+name := "junit-4.13"
 
 organization := "org.scalatestplus"
 
@@ -36,7 +36,7 @@ Compile / unmanagedSourceDirectories ++= {
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.1.4",
-  "junit" % "junit" % "4.12"
+  "junit" % "junit" % "4.13"
 )
 Test / scalacOptions ++= (if (isDotty.value) Seq("-language:implicitConversions") else Nil)
 
