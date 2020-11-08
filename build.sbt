@@ -2,7 +2,7 @@ name := "junit-4.13"
 
 organization := "org.scalatestplus"
 
-version := "3.2.2.0"
+version := "3.2.3.0"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -23,12 +23,14 @@ developers := List(
   )
 )
 
+scalaVersion := "2.13.3"
+
 crossScalaVersions := List(
   "2.10.7", 
   "2.11.12", 
   "2.12.12", 
   "2.13.3", 
-  "0.27.0-RC1"
+  "3.0.0-M1"
 )
 
 /** Add src/main/scala-{2|3} to Compile / unmanagedSourceDirectories */
@@ -41,12 +43,12 @@ Compile / unmanagedSourceDirectories ++= {
 }
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest-core" % "3.2.2",
+  "org.scalatest" %% "scalatest-core" % "3.2.3",
   "junit" % "junit" % "4.13", 
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.2" % "test", 
-  "org.scalatest" %% "scalatest-funspec" % "3.2.2" % "test", 
-  "org.scalatest" %% "scalatest-funsuite" % "3.2.2" % "test", 
-  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.2" % "test"
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.3" % "test", 
+  "org.scalatest" %% "scalatest-funspec" % "3.2.3" % "test", 
+  "org.scalatest" %% "scalatest-funsuite" % "3.2.3" % "test", 
+  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.3" % "test"
 )
 Test / scalacOptions ++= (if (isDotty.value) Seq("-language:implicitConversions") else Nil)
 
@@ -117,4 +119,7 @@ pomExtra := (
 
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
-scalacOptions in (Compile, doc) := Seq("-doc-title", s"ScalaTest + JUnit ${version.value}") 
+// Temporary disable publishing of doc in dotty, can't get it to build.
+publishArtifact in (Compile, packageDoc) := !scalaBinaryVersion.value.startsWith("3.")
+
+scalacOptions in (Compile, doc) := Seq("-doc-title", s"ScalaTest + EasyMock ${version.value}")
