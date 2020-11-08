@@ -122,4 +122,4 @@ credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 // Temporary disable publishing of doc in dotty, can't get it to build.
 publishArtifact in (Compile, packageDoc) := !scalaBinaryVersion.value.startsWith("3.")
 
-scalacOptions in (Compile, doc) := Seq("-doc-title", s"ScalaTest + EasyMock ${version.value}")
+scalacOptions in (Compile, doc) := Seq("-doc-title", s"ScalaTest + JUnit ${version.value}")
