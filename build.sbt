@@ -30,7 +30,7 @@ crossScalaVersions := List(
   "2.11.12", 
   "2.12.12", 
   "2.13.4", 
-  "3.0.0-M2"
+  "3.0.0-M3"
 )
 
 /** Add src/main/scala-{2|3} to Compile / unmanagedSourceDirectories */
