@@ -2,7 +2,7 @@ name := "junit-4.13"
 
 organization := "org.scalatestplus"
 
-version := "3.2.5.0"
+version := "3.2.6.0"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -43,12 +43,12 @@ Compile / unmanagedSourceDirectories ++= {
 }
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest-core" % "3.2.5",
+  "org.scalatest" %% "scalatest-core" % "3.2.6",
   "junit" % "junit" % "4.13", 
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.5" % "test", 
-  "org.scalatest" %% "scalatest-funspec" % "3.2.5" % "test", 
-  "org.scalatest" %% "scalatest-funsuite" % "3.2.5" % "test", 
-  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.5" % "test"
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.6" % "test", 
+  "org.scalatest" %% "scalatest-funspec" % "3.2.6" % "test", 
+  "org.scalatest" %% "scalatest-funsuite" % "3.2.6" % "test", 
+  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.6" % "test"
 )
 Test / scalacOptions ++= (if (isDotty.value) Seq("-language:implicitConversions") else Nil)
 
