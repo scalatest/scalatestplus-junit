@@ -196,5 +196,12 @@ package org.scalatestplus.junit {
       assert(repA.testSucceededEvents.size === 2)
     }
 
+    test("A JUnitWrapperSuite should use the fully qualified classname of the class being wrapped as suiteId") {
+      val jRap =
+        new JUnitWrapperSuite("org.scalatestplus.junit.JHappySuite",
+                              this.getClass.getClassLoader)
+      assert(jRap.suiteId == "org.scalatestplus.junit.JHappySuite")                        
+    }
+
   }
 }
