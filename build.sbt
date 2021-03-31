@@ -2,7 +2,7 @@ name := "junit-4.13"
 
 organization := "org.scalatestplus"
 
-version := "3.2.6.0"
+version := "3.2.7.0"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -23,14 +23,14 @@ developers := List(
   )
 )
 
-scalaVersion := "2.13.4"
+scalaVersion := "2.13.5"
 
 crossScalaVersions := List(
   "2.10.7", 
   "2.11.12", 
   "2.12.13", 
-  "2.13.4", 
-  "3.0.0-RC1"
+  "2.13.5", 
+  "3.0.0-RC2"
 )
 
 /** Add src/main/scala-{2|3} to Compile / unmanagedSourceDirectories */
@@ -43,12 +43,12 @@ Compile / unmanagedSourceDirectories ++= {
 }
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest-core" % "3.2.6",
+  "org.scalatest" %% "scalatest-core" % "3.2.7",
   "junit" % "junit" % "4.13", 
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.6" % "test", 
-  "org.scalatest" %% "scalatest-funspec" % "3.2.6" % "test", 
-  "org.scalatest" %% "scalatest-funsuite" % "3.2.6" % "test", 
-  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.6" % "test"
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.7" % "test", 
+  "org.scalatest" %% "scalatest-funspec" % "3.2.7" % "test", 
+  "org.scalatest" %% "scalatest-funsuite" % "3.2.7" % "test", 
+  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.7" % "test"
 )
 Test / scalacOptions ++= (if (isDotty.value) Seq("-language:implicitConversions") else Nil)
 
