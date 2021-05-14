@@ -103,8 +103,7 @@ package org.scalatestplus.junit {
     // propagate up.
     //
     test("a test failure is reported due to an exception thrown from " +
-         "beforeAll when JUnitRunner.run is called directly")
-    {
+         "beforeAll when JUnitRunner.run is called directly") {
       class MyRunNotifier extends RunNotifier {
         var methodInvocationCount = 0
         var passed: Option[Failure] = None
@@ -129,8 +128,7 @@ package org.scalatestplus.junit {
     // behavior seen when JUnit calls the JUnitRunner.
     //
     test("That a test failure is reported due to an exception thrown from " +
-         "beforeAll when JUnitRunner is called from JUnit")
-    {
+         "beforeAll when JUnitRunner is called from JUnit") {
       val result = JUnitCore.runClasses(classOf[KerblooeySuite])
       val kerblooeySuite = new KerblooeySuite
       assert(result.getRunCount === kerblooeySuite.runCount) 
