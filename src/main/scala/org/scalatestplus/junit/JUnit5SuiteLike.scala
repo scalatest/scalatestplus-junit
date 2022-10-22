@@ -18,14 +18,8 @@ package org.scalatestplus.junit;
 import org.scalatest.{Resources => _, _}
 
 import java.lang.reflect.{Method, Modifier}
-import org.junit.runner.notification.Failure
-import org.junit.runner.notification.RunListener
-import org.junit.runner.{Description, JUnitCore, Request, Result}
-import org.scalactic.source
 import JUnitHelper.autoTagClassAnnotations
-import org.junit.platform.engine.{ExecutionRequest, TestDescriptor}
 import org.junit.platform.launcher.core.LauncherFactory
-import org.scalatest.tools.Utils.wrapReporterIfNecessary
 
 import collection.immutable.TreeSet
 
@@ -232,7 +226,6 @@ trait JUnit5SuiteLike extends Suite with AssertionsForJUnit5 { thisSuite =>
    */
   override def run(testName: Option[String], args: Args): Status = {
 
-    println("######here!!!!!!!!!!!!!!!!!!!")
     import args._
 
     theTracker = tracker

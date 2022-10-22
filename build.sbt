@@ -50,8 +50,8 @@ libraryDependencies ++= Seq(
   "org.junit.vintage" % "junit-vintage-engine" % "5.9.1", 
   "org.junit.jupiter" % "junit-jupiter-api" % "5.9.1",
   "org.junit.jupiter" % "junit-jupiter-engine" % "5.9.1",
-  "org.junit.platform" % "junit-platform-launcher" % "1.9.1", 
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.14" % "test", 
+  "org.junit.platform" % "junit-platform-launcher" % "1.9.1",
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.14" % "test",
   "org.scalatest" %% "scalatest-funspec" % "3.2.14" % "test", 
   "org.scalatest" %% "scalatest-funsuite" % "3.2.14" % "test", 
   "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.14" % "test"
