@@ -63,7 +63,6 @@ package org.scalatestplus.junit {
       var runStartingCount = 0
       var runCompletedCount = 0
       def apply(event: Event): Unit = {
-        println("*******************event: " + event)
         event match {
           case RunStarting(_, testCount, _, _, _, _, _, _) =>
             runStartingCount += 1

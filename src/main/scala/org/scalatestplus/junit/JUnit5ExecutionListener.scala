@@ -79,10 +79,6 @@ private[junit] class JUnit5ExecutionListener(report: Reporter,
       val (testName, testClass, testClassName) =
         parseTestDescription(testIdentifier.getUniqueId)
 
-      println("###testName: " + testName)
-      println("###testClass: " + testClass)
-      println("###testClassName: " + testClassName)
-      //println(testName)
       report(TestStarting(theTracker.nextOrdinal(), testClassName, testClass, Some(testClass), testName, testName, Some(MotionToSuppress), getTopOfMethod(testClass, testName)))
     }
   }

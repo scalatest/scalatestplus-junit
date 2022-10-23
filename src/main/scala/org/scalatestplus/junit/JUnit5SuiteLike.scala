@@ -20,6 +20,8 @@ import org.scalatest.{Resources => _, _}
 import java.lang.reflect.{Method, Modifier}
 import JUnitHelper.autoTagClassAnnotations
 import org.junit.platform.launcher.core.LauncherFactory
+import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder.request
+import org.junit.platform.engine.discovery.DiscoverySelectors.{selectClass, selectMethod}
 
 import collection.immutable.TreeSet
 
@@ -171,7 +173,7 @@ trait JUnit5SuiteLike extends Suite with AssertionsForJUnit5 { thisSuite =>
   override def tags: Map[String, Set[String]] = {
 
     val elements =
-      for (testName <- testNames; if hasIgnoreTag(testName))
+      for (testName <- testNames; if hasDisabledTag(testName))
         yield testName -> Set("org.scalatest.Ignore")
 
     autoTagClassAnnotations(Map() ++ elements, this)
@@ -180,7 +182,7 @@ trait JUnit5SuiteLike extends Suite with AssertionsForJUnit5 { thisSuite =>
   private def getMethodForJUnitTestName(testName: String) =
     getClass.getMethod(testName, new Array[Class[_]](0): _*)
 
-  private def hasIgnoreTag(testName: String) = getMethodForJUnitTestName(testName).getAnnotation(classOf[org.junit.Ignore]) != null
+  private def hasDisabledTag(testName: String) = getMethodForJUnitTestName(testName).getAnnotation(classOf[org.junit.jupiter.api.Disabled]) != null
 
   /**
    * Overrides to retrieve suite and test tags from annotations.
@@ -197,7 +199,7 @@ trait JUnit5SuiteLike extends Suite with AssertionsForJUnit5 { thisSuite =>
     } yield annotationClass.getName
     val testTags: Set[String] =
       try {
-        if (hasIgnoreTag(testName))
+        if (hasDisabledTag(testName))
           Set("org.scalatest.Ignore")
         else
           Set.empty[String]
@@ -241,20 +243,19 @@ trait JUnit5SuiteLike extends Suite with AssertionsForJUnit5 { thisSuite =>
       // https://junit.org/junit5/docs/5.7.2/api/org.junit.platform.testkit/org/junit/platform/testkit/engine/EngineTestKit.html
       // https://junit.org/junit5/docs/5.8.2/api/org.junit.platform.launcher/org/junit/platform/launcher/Launcher.html
 
-      import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder.request
-      import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
-      import org.junit.jupiter.engine.JupiterTestEngine
-      import org.junit.platform.engine.UniqueId
-
       val testClass = this.getClass
 
-      val req = request().selectors(selectClass(testClass)).build()
       val listener = new JUnit5ExecutionListener(reporter, configMap, tracker, status)
-      /*val engine = new JupiterTestEngine();
-      val testDescriptor = engine.discover(req, UniqueId.forEngine(engine.getId()))
-      engine.execute(new ExecutionRequest(testDescriptor, listener, req.getConfigurationParameters()))*/
-
       val launcher = LauncherFactory.create()
+      val req = request()
+                .selectors(
+                  testName.map { tn =>
+                    if (testNames.contains(tn))
+                      selectMethod(testClass, tn)
+                    else
+                      throw new IllegalArgumentException(Resources.testNotFound(testName))
+                  }.getOrElse(selectClass(testClass)))
+                .build()
       launcher.execute(req, listener)
     }
 
