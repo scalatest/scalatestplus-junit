@@ -54,10 +54,10 @@ libraryDependencies ++= Seq(
   "org.junit.jupiter" % "junit-jupiter-api" % junitVersion,
   "org.junit.jupiter" % "junit-jupiter-engine" % junitVersion % Test,
   "org.junit.platform" % "junit-platform-launcher" % "1.9.1",
-  "org.scalatest" %% "scalatest-wordspec" % scalatestVersion % "test",
-  "org.scalatest" %% "scalatest-funspec" % scalatestVersion % "test",
-  "org.scalatest" %% "scalatest-funsuite" % scalatestVersion % "test",
-  "org.scalatest" %% "scalatest-shouldmatchers" % scalatestVersion % "test"
+  "org.scalatest" %% "scalatest-wordspec" % scalatestVersion % Test,
+  "org.scalatest" %% "scalatest-funspec" % scalatestVersion % Test,
+  "org.scalatest" %% "scalatest-funsuite" % scalatestVersion % Test,
+  "org.scalatest" %% "scalatest-shouldmatchers" % scalatestVersion % Test
 )
 
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
