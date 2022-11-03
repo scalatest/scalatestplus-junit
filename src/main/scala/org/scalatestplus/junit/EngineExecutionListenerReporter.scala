@@ -15,13 +15,8 @@
  */
 package org.scalatestplus.junit
 
-import org.junit.jupiter.engine.descriptor.{ClassTestDescriptor, TestMethodTestDescriptor}
-import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.engine.{EngineExecutionListener, TestDescriptor, TestExecutionResult, UniqueId}
 import org.scalatest.{Resources => _, _}
-import org.junit.runner.notification.RunNotifier
-import org.junit.runner.Description
-import org.junit.runner.notification.Failure
 import org.scalatest.events._
 
 private[junit] class EngineExecutionListenerReporter(listener: EngineExecutionListener, clzDesc: ScalaTestClassDescriptor, engineDesc: TestDescriptor) extends Reporter {
