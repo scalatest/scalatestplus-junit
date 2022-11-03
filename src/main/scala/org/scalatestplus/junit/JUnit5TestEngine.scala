@@ -15,7 +15,7 @@
  */
 package org.scalatestplus.junit
 
-import org.junit.jupiter.engine.config.DefaultJupiterConfiguration
+import org.junit.jupiter.engine.config.{DefaultJupiterConfiguration, JupiterConfiguration}
 import org.junit.jupiter.engine.descriptor.ClassTestDescriptor
 import org.junit.platform.commons.support.ReflectionSupport
 import org.junit.platform.engine.discovery.{ClassSelector, ClasspathRootSelector, PackageSelector}
@@ -23,7 +23,7 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.engine.{EngineDiscoveryRequest, ExecutionRequest, TestDescriptor, UniqueId}
 import org.scalatest.{Args, ConfigMap, Filter, Stopper, Tracker}
 
-import scala.jdk.CollectionConverters._
+import scala.collection.JavaConverters._
 
 class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
 
@@ -34,25 +34,33 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
 
   def discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor = {
     // reference: https://blogs.oracle.com/javamagazine/post/junit-build-custom-test-engines-java
-
-
     val config = new DefaultJupiterConfiguration(discoveryRequest.getConfigurationParameters)
 
-    discoveryRequest.getSelectorsByType(classOf[ClasspathRootSelector]).forEach { selector =>
-      ReflectionSupport.findAllClassesInClasspathRoot(selector.getClasspathRoot, _.isAssignableFrom(classOf[org.scalatest.Suite]), _ => true)
-        .stream()
+    val alwaysTruePredicate =
+      new java.util.function.Predicate[String]() {
+        def test(t: String): Boolean = true
+      }
+
+    val isSuitePredicate =
+      new java.util.function.Predicate[Class[_]]() {
+        def test(t: Class[_]): Boolean = t.isAssignableFrom(classOf[org.scalatest.Suite])
+      }
+
+    discoveryRequest.getSelectorsByType(classOf[ClasspathRootSelector]).asScala.foreach { selector =>
+      ReflectionSupport.findAllClassesInClasspathRoot(selector.getClasspathRoot, isSuitePredicate, alwaysTruePredicate)
+        .asScala
         .map(aClass => new ClassTestDescriptor(uniqueId.append(ClassTestDescriptor.SEGMENT_TYPE, aClass.getName), aClass, config))
-        .forEach(engineDesc.addChild)
+        .foreach(engineDesc.addChild _)
     }
 
-    discoveryRequest.getSelectorsByType(classOf[PackageSelector]).forEach {selector =>
-      ReflectionSupport.findAllClassesInPackage(selector.getPackageName(), _.isAssignableFrom(classOf[org.scalatest.Suite]), _ => true)
-        .stream()
+    discoveryRequest.getSelectorsByType(classOf[PackageSelector]).asScala.foreach {selector =>
+      ReflectionSupport.findAllClassesInPackage(selector.getPackageName(), isSuitePredicate, alwaysTruePredicate)
+        .asScala
         .map(aClass => new ClassTestDescriptor(uniqueId.append(ClassTestDescriptor.SEGMENT_TYPE, aClass.getName), aClass, config))
-        .forEach(engineDesc.addChild)
+        .foreach(engineDesc.addChild _)
     }
 
-    discoveryRequest.getSelectorsByType(classOf[ClassSelector]).forEach { selector =>
+    discoveryRequest.getSelectorsByType(classOf[ClassSelector]).asScala.foreach { selector =>
       if (selector.getJavaClass.isAssignableFrom(classOf[org.scalatest.Suite]))
         engineDesc.addChild(new ClassTestDescriptor(uniqueId.append(ClassTestDescriptor.SEGMENT_TYPE, selector.getJavaClass.getName), selector.getJavaClass, config))
     }
