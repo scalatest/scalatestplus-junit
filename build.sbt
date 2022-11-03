@@ -46,12 +46,13 @@ Compile / unmanagedSourceDirectories ++= {
 }
 
 val scalatestVersion = "3.2.14"
+val junitVersion = "5.9.1"
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest-core" % scalatestVersion,
-  "org.junit.vintage" % "junit-vintage-engine" % "5.9.1",
-  "org.junit.jupiter" % "junit-jupiter-api" % "5.9.1",
-  "org.junit.jupiter" % "junit-jupiter-engine" % "5.9.1" % Test,
+  "org.junit.vintage" % "junit-vintage-engine" % junitVersion,
+  "org.junit.jupiter" % "junit-jupiter-api" % junitVersion,
+  "org.junit.jupiter" % "junit-jupiter-engine" % junitVersion % Test,
   "org.junit.platform" % "junit-platform-launcher" % "1.9.1",
   "org.scalatest" %% "scalatest-wordspec" % scalatestVersion % "test",
   "org.scalatest" %% "scalatest-funspec" % scalatestVersion % "test",
