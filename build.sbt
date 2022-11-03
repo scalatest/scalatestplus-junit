@@ -45,16 +45,18 @@ Compile / unmanagedSourceDirectories ++= {
   }
 }
 
+val scalatestVersion = "3.2.14"
+
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest-core" % "3.2.14",
+  "org.scalatest" %% "scalatest-core" % scalatestVersion,
   "org.junit.vintage" % "junit-vintage-engine" % "5.9.1",
   "org.junit.jupiter" % "junit-jupiter-api" % "5.9.1",
   "org.junit.jupiter" % "junit-jupiter-engine" % "5.9.1" % Test,
   "org.junit.platform" % "junit-platform-launcher" % "1.9.1",
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.14" % "test",
-  "org.scalatest" %% "scalatest-funspec" % "3.2.14" % "test", 
-  "org.scalatest" %% "scalatest-funsuite" % "3.2.14" % "test", 
-  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.14" % "test"
+  "org.scalatest" %% "scalatest-wordspec" % scalatestVersion % "test",
+  "org.scalatest" %% "scalatest-funspec" % scalatestVersion % "test",
+  "org.scalatest" %% "scalatest-funsuite" % scalatestVersion % "test",
+  "org.scalatest" %% "scalatest-shouldmatchers" % scalatestVersion % "test"
 )
 
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
