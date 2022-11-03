@@ -15,8 +15,6 @@
  */
 package org.scalatestplus.junit
 
-import org.junit.jupiter.engine.config.{DefaultJupiterConfiguration, JupiterConfiguration}
-import org.junit.jupiter.engine.descriptor.ClassTestDescriptor
 import org.junit.platform.commons.support.ReflectionSupport
 import org.junit.platform.engine.discovery.{ClassSelector, ClasspathRootSelector, PackageSelector}
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
@@ -34,7 +32,6 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
 
   def discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor = {
     // reference: https://blogs.oracle.com/javamagazine/post/junit-build-custom-test-engines-java
-    val config = new DefaultJupiterConfiguration(discoveryRequest.getConfigurationParameters)
 
     val alwaysTruePredicate =
       new java.util.function.Predicate[String]() {
@@ -49,20 +46,20 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
     discoveryRequest.getSelectorsByType(classOf[ClasspathRootSelector]).asScala.foreach { selector =>
       ReflectionSupport.findAllClassesInClasspathRoot(selector.getClasspathRoot, isSuitePredicate, alwaysTruePredicate)
         .asScala
-        .map(aClass => new ClassTestDescriptor(uniqueId.append(ClassTestDescriptor.SEGMENT_TYPE, aClass.getName), aClass, config))
+        .map(aClass => new ScalaTestClassDescriptor(engineDesc, uniqueId.append(ScalaTestClassDescriptor.segmentType, aClass.getName), aClass))
         .foreach(engineDesc.addChild _)
     }
 
     discoveryRequest.getSelectorsByType(classOf[PackageSelector]).asScala.foreach {selector =>
       ReflectionSupport.findAllClassesInPackage(selector.getPackageName(), isSuitePredicate, alwaysTruePredicate)
         .asScala
-        .map(aClass => new ClassTestDescriptor(uniqueId.append(ClassTestDescriptor.SEGMENT_TYPE, aClass.getName), aClass, config))
+        .map(aClass => new ScalaTestClassDescriptor(engineDesc, uniqueId.append(ScalaTestClassDescriptor.segmentType, aClass.getName), aClass))
         .foreach(engineDesc.addChild _)
     }
 
     discoveryRequest.getSelectorsByType(classOf[ClassSelector]).asScala.foreach { selector =>
       if (selector.getJavaClass.isAssignableFrom(classOf[org.scalatest.Suite]))
-        engineDesc.addChild(new ClassTestDescriptor(uniqueId.append(ClassTestDescriptor.SEGMENT_TYPE, selector.getJavaClass.getName), selector.getJavaClass, config))
+        engineDesc.addChild(new ScalaTestClassDescriptor(engineDesc, uniqueId.append(ScalaTestClassDescriptor.segmentType, selector.getJavaClass.getName), selector.getJavaClass))
     }
 
     engineDesc
@@ -73,9 +70,9 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
     val listener = request.getEngineExecutionListener
     engineDesc.getChildren.asScala.foreach { testDesc =>
       testDesc match {
-        case clzDesc: ClassTestDescriptor =>
-          val suiteClass = clzDesc.getTestClass
-          val canInstantiate = JUnitHelper.checkForPublicNoArgConstructor(clzDesc.getTestClass) && clzDesc.getTestClass.isAssignableFrom(classOf[org.scalatest.Suite])
+        case clzDesc: ScalaTestClassDescriptor =>
+          val suiteClass = clzDesc.suiteClass
+          val canInstantiate = JUnitHelper.checkForPublicNoArgConstructor(suiteClass) && suiteClass.isAssignableFrom(classOf[org.scalatest.Suite])
           require(canInstantiate, "Must pass an org.scalatest.Suite with a public no-arg constructor")
           val suiteToRun = suiteClass.newInstance.asInstanceOf[org.scalatest.Suite]
 

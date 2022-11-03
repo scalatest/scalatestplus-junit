@@ -24,7 +24,7 @@ import org.junit.runner.Description
 import org.junit.runner.notification.Failure
 import org.scalatest.events._
 
-private[junit] class EngineExecutionListenerReporter(listener: EngineExecutionListener, clzDesc: ClassTestDescriptor, engineDesc: TestDescriptor) extends Reporter {
+private[junit] class EngineExecutionListenerReporter(listener: EngineExecutionListener, clzDesc: ScalaTestClassDescriptor, engineDesc: TestDescriptor) extends Reporter {
 
   // This form isn't clearly specified in JUnit docs, but some tools may assume it, so why rock the boat.
   // Here's what JUnit code does:
