@@ -47,9 +47,9 @@ Compile / unmanagedSourceDirectories ++= {
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest-core" % "3.2.14",
-  "org.junit.vintage" % "junit-vintage-engine" % "5.9.1", 
+  "org.junit.vintage" % "junit-vintage-engine" % "5.9.1",
   "org.junit.jupiter" % "junit-jupiter-api" % "5.9.1",
-  "org.junit.jupiter" % "junit-jupiter-engine" % "5.9.1",
+  "org.junit.jupiter" % "junit-jupiter-engine" % "5.9.1" % Test,
   "org.junit.platform" % "junit-platform-launcher" % "1.9.1",
   "org.scalatest" %% "scalatest-wordspec" % "3.2.14" % "test",
   "org.scalatest" %% "scalatest-funspec" % "3.2.14" % "test", 
