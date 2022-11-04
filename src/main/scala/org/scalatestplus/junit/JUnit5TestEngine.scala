@@ -22,8 +22,11 @@ import org.junit.platform.engine.{EngineDiscoveryRequest, ExecutionRequest, Test
 import org.scalatest.{Args, ConfigMap, Filter, Stopper, Tracker}
 
 import scala.collection.JavaConverters._
+import java.util.logging.Logger
 
 class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
+
+  private val logger = Logger.getLogger(classOf[JUnit5TestEngine].getName)
 
   private val uniqueId = UniqueId.forEngine("scalatest-test-engine")
   private val engineDesc = new EngineDescriptor(uniqueId, "ScalaTest Test Engine")
@@ -32,6 +35,9 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
 
   def discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor = {
     // reference: https://blogs.oracle.com/javamagazine/post/junit-build-custom-test-engines-java
+    //            https://software-matters.net/posts/custom-test-engine/
+
+    logger.info("Starting test discovery...")
 
     val alwaysTruePredicate =
       new java.util.function.Predicate[String]() {
@@ -62,15 +68,19 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
         engineDesc.addChild(new ScalaTestClassDescriptor(engineDesc, uniqueId.append(ScalaTestClassDescriptor.segmentType, selector.getJavaClass.getName), selector.getJavaClass))
     }
 
+    logger.info("Completed test discovery.")
+
     engineDesc
   }
 
   def execute(request: ExecutionRequest): Unit = {
+    logger.info("Start  tests execution...")
     val engineDesc = request.getRootTestDescriptor
     val listener = request.getEngineExecutionListener
     engineDesc.getChildren.asScala.foreach { testDesc =>
       testDesc match {
         case clzDesc: ScalaTestClassDescriptor =>
+          logger.info("Start execution of suite class " + clzDesc.suiteClass.getName + "...")
           val suiteClass = clzDesc.suiteClass
           val canInstantiate = JUnitHelper.checkForPublicNoArgConstructor(suiteClass) && suiteClass.isAssignableFrom(classOf[org.scalatest.Suite])
           require(canInstantiate, "Must pass an org.scalatest.Suite with a public no-arg constructor")
@@ -82,8 +92,13 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
             Stopper.default, Filter(), ConfigMap.empty, None,
             new Tracker, Set.empty))
 
-        case _ => // Do nothing for other descriptor
+          logger.info("Completed execution of suite class " + clzDesc.suiteClass.getName + ".")
+
+        case otherDesc =>
+          // Do nothing for other descriptor, just log it.
+          logger.warning("Found test descriptor " + otherDesc.toString + " that is not supported, skipping.")
       }
     }
+    logger.info("Completed tests execution.")
   }
 }
