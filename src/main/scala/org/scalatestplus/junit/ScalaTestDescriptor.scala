@@ -18,7 +18,6 @@ package org.scalatestplus.junit
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.{TestDescriptor, UniqueId}
 
-class ScalaTestDescriptor(parent: TestDescriptor, theUniqueId: UniqueId, displayName: String) extends AbstractTestDescriptor(theUniqueId, displayName) {
-  setParent(parent)
+class ScalaTestDescriptor(theUniqueId: UniqueId, displayName: String) extends AbstractTestDescriptor(theUniqueId, displayName) {
   override def getType: TestDescriptor.Type = TestDescriptor.Type.TEST
 }

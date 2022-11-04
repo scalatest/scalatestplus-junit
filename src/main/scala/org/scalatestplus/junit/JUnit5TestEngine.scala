@@ -16,7 +16,7 @@
 package org.scalatestplus.junit
 
 import org.junit.platform.commons.support.ReflectionSupport
-import org.junit.platform.engine.discovery.{ClassSelector, ClasspathRootSelector, PackageSelector}
+import org.junit.platform.engine.discovery.{ClassSelector, ClasspathRootSelector, FileSelector, PackageSelector}
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.engine.{EngineDiscoveryRequest, ExecutionRequest, TestDescriptor, UniqueId}
 import org.scalatest.{Args, ConfigMap, Filter, Stopper, Tracker}
@@ -27,17 +27,15 @@ import java.util.logging.Logger
 class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
 
   private val logger = Logger.getLogger(classOf[JUnit5TestEngine].getName)
-
-  private val uniqueId = UniqueId.forEngine("scalatest-test-engine")
-  private val engineDesc = new EngineDescriptor(uniqueId, "ScalaTest Test Engine")
-
-  def getId: String = uniqueId.toString
+  def getId: String = "scalatest-suiterunner"
 
   def discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor = {
     // reference: https://blogs.oracle.com/javamagazine/post/junit-build-custom-test-engines-java
     //            https://software-matters.net/posts/custom-test-engine/
 
     logger.info("Starting test discovery...")
+
+    val engineDesc = new EngineDescriptor(uniqueId, "ScalaTest EngineDescriptor")
 
     val alwaysTruePredicate =
       new java.util.function.Predicate[String]() {
@@ -46,7 +44,7 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
 
     val isSuitePredicate =
       new java.util.function.Predicate[Class[_]]() {
-        def test(t: Class[_]): Boolean = t.isAssignableFrom(classOf[org.scalatest.Suite])
+        def test(t: Class[_]): Boolean = classOf[org.scalatest.Suite].isAssignableFrom(t)
       }
 
     discoveryRequest.getSelectorsByType(classOf[ClasspathRootSelector]).asScala.foreach { selector =>
@@ -64,25 +62,25 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
     }
 
     discoveryRequest.getSelectorsByType(classOf[ClassSelector]).asScala.foreach { selector =>
-      if (selector.getJavaClass.isAssignableFrom(classOf[org.scalatest.Suite]))
+      if (classOf[org.scalatest.Suite].isAssignableFrom(selector.getJavaClass))
         engineDesc.addChild(new ScalaTestClassDescriptor(engineDesc, uniqueId.append(ScalaTestClassDescriptor.segmentType, selector.getJavaClass.getName), selector.getJavaClass))
     }
 
-    logger.info("Completed test discovery.")
-
+    logger.info("Completed test discovery, discovered suite count: " + engineDesc.getChildren.size())
     engineDesc
   }
 
   def execute(request: ExecutionRequest): Unit = {
-    logger.info("Start  tests execution...")
+    logger.info("Start tests execution...")
     val engineDesc = request.getRootTestDescriptor
+
     val listener = request.getEngineExecutionListener
     engineDesc.getChildren.asScala.foreach { testDesc =>
       testDesc match {
         case clzDesc: ScalaTestClassDescriptor =>
           logger.info("Start execution of suite class " + clzDesc.suiteClass.getName + "...")
           val suiteClass = clzDesc.suiteClass
-          val canInstantiate = JUnitHelper.checkForPublicNoArgConstructor(suiteClass) && suiteClass.isAssignableFrom(classOf[org.scalatest.Suite])
+          val canInstantiate = JUnitHelper.checkForPublicNoArgConstructor(suiteClass) && classOf[org.scalatest.Suite].isAssignableFrom(suiteClass)
           require(canInstantiate, "Must pass an org.scalatest.Suite with a public no-arg constructor")
           val suiteToRun = suiteClass.newInstance.asInstanceOf[org.scalatest.Suite]
 

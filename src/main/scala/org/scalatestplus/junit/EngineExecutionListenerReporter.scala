@@ -44,8 +44,8 @@ private[junit] class EngineExecutionListenerReporter(listener: EngineExecutionLi
     }
 
   private def createTestDescriptor(suiteId: String, suiteName: String, suiteClassName: Option[String], testName: String): ScalaTestDescriptor = {
-    val uniqueId = UniqueId.parse(testDescriptionName(suiteName, suiteClassName, testName))
-    new ScalaTestDescriptor(clzDesc, uniqueId, testName)
+    val uniqueId = clzDesc.theUniqueId.append("test", testName)
+    new ScalaTestDescriptor(uniqueId, testName)
   }
 
   override def apply(event: Event): Unit = {
@@ -54,6 +54,8 @@ private[junit] class EngineExecutionListenerReporter(listener: EngineExecutionLi
 
       case TestStarting(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, rerunnable, payload, threadName, timeStamp) =>
         val testDesc = createTestDescriptor(suiteId, suiteName, suiteClassName, testName)
+        clzDesc.addChild(testDesc)
+        listener.dynamicTestRegistered(testDesc)
         listener.executionStarted(testDesc)
 
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, analysis, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
