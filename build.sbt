@@ -82,6 +82,10 @@ Test / testOptions :=
       "-m", "org.scalatestplus.junit",
     ))
 
+Test / fork := true
+
+Test / javaOptions  +="-Dorg.scalatestplus.junit.JUnit5TestEngine.disabled=true"
+
 enablePlugins(SbtOsgi)
 
 osgiSettings
