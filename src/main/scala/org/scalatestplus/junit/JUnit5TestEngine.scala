@@ -80,11 +80,12 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
       logger.info("Start tests execution...")
       val engineDesc = request.getRootTestDescriptor
       val listener = request.getEngineExecutionListener
-      //listener.executionStarted(engineDesc)
+      listener.executionStarted(engineDesc)
       engineDesc.getChildren.asScala.foreach { testDesc =>
         testDesc match {
           case clzDesc: ScalaTestClassDescriptor =>
             logger.info("Start execution of suite class " + clzDesc.suiteClass.getName + "...")
+            listener.executionStarted(clzDesc)
             val suiteClass = clzDesc.suiteClass
             val canInstantiate = JUnitHelper.checkForPublicNoArgConstructor(suiteClass) && classOf[org.scalatest.Suite].isAssignableFrom(suiteClass)
             require(canInstantiate, "Must pass an org.scalatest.Suite with a public no-arg constructor")
@@ -97,7 +98,7 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
               Stopper.default, Filter(), ConfigMap.empty, None,
               new Tracker, Set.empty))
 
-            //listener.executionFinished(clzDesc, TestExecutionResult.successful())
+            listener.executionFinished(clzDesc, TestExecutionResult.successful())
 
             logger.info("Completed execution of suite class " + clzDesc.suiteClass.getName + ".")
 
@@ -106,7 +107,7 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
             logger.warning("Found test descriptor " + otherDesc.toString + " that is not supported, skipping.")
         }
       }
-      //listener.executionFinished(engineDesc, TestExecutionResult.successful())
+      listener.executionFinished(engineDesc, TestExecutionResult.successful())
       logger.info("Completed tests execution.")
     }
   }

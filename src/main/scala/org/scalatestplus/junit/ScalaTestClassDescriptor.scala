@@ -15,11 +15,14 @@
  */
 package org.scalatestplus.junit
 
-import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
+import org.junit.platform.engine.support.descriptor.{AbstractTestDescriptor, ClassSource}
 import org.junit.platform.engine.{TestDescriptor, UniqueId}
 
-class ScalaTestClassDescriptor(parent: TestDescriptor, val theUniqueId: UniqueId, val suiteClass: Class[_]) extends AbstractTestDescriptor(theUniqueId, suiteClass.getName) {
-  override def getType: TestDescriptor.Type = TestDescriptor.Type.TEST
+class ScalaTestClassDescriptor(parent: TestDescriptor, val theUniqueId: UniqueId, val suiteClass: Class[_]) extends AbstractTestDescriptor(theUniqueId, suiteClass.getName, ClassSource.from(suiteClass)) {
+
+  // TODO: Need to add a anom test so that this will be executed, is there a better way?
+  addChild(new ScalaTestDescriptor(theUniqueId.append("test", "anom"), "anom"))
+  override def getType: TestDescriptor.Type = TestDescriptor.Type.CONTAINER
 }
 
 object ScalaTestClassDescriptor {
