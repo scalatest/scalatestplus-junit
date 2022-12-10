@@ -26,13 +26,13 @@ developers := List(
   )
 )
 
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.10"
 
 crossScalaVersions := List(
   "2.10.7", 
   "2.11.12", 
-  "2.12.16", 
-  "2.13.8", 
+  "2.12.17", 
+  "2.13.10", 
   "3.1.3"
 )
 
