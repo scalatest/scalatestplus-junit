@@ -25,11 +25,21 @@ import org.scalatest.{Args, ConfigMap, Filter, Stopper, Tracker}
 import scala.collection.JavaConverters._
 import java.util.logging.Logger
 
+/**
+ * ScalaTest implementation for JUnit 5 Test Engine.
+ */ 
 class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
 
   private val logger = Logger.getLogger(classOf[JUnit5TestEngine].getName)
+
+  /**
+   * Test engine ID, return "scalatest".
+   */
   def getId: String = "scalatest"
 
+  /**
+   * Discover ScalaTest suites, you can disable the discover by setting system property org.scalatestplus.junit.JUnit5TestEngine.disabled to "true".
+   */
   def discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor = {
     // reference: https://blogs.oracle.com/javamagazine/post/junit-build-custom-test-engines-java
     //            https://software-matters.net/posts/custom-test-engine/
@@ -71,10 +81,12 @@ class JUnit5TestEngine extends org.junit.platform.engine.TestEngine {
       logger.info("Completed test discovery, discovered suite count: " + engineDesc.getChildren.size())
     }
 
-
     engineDesc
   }
 
+  /**
+   * Execute ScalaTest suites, you can disable the ScalaTest suites execution by setting system property org.scalatestplus.junit.JUnit5TestEngine.disabled to "true".
+   */
   def execute(request: ExecutionRequest): Unit = {
     if (System.getProperty("org.scalatestplus.junit.JUnit5TestEngine.disabled") != "true") {
       logger.info("Start tests execution...")
