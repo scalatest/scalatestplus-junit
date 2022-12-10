@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2022 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,24 +26,25 @@ import org.junit.platform.engine.discovery.DiscoverySelectors.{selectClass, sele
 import collection.immutable.TreeSet
 
 /**
- * Implementation trait for class <code>JUnitSuite</code>, which represents
- * a suite of tests that can be run with either JUnit or ScalaTest.
+ * Implementation trait for class <code>JUnit5Suite</code>, which represents
+ * a suite of tests that can be run with either JUnit 5 or ScalaTest.
  *
  * <p>
- * <a href="JUnitSuite.html"><code>JUnitSuite</code></a> is a class, not a
+ * <a href="JUnit5Suite.html"><code>JUnit5Suite</code></a> is a class, not a
  * trait, to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>JUnitSuite</code> into some other class, you can use this
- * trait instead, because class <code>JUnitSuite</code> does nothing more than
+ * behavior of <code>JUnit5Suite</code> into some other class, you can use this
+ * trait instead, because class <code>JUnit5Suite</code> does nothing more than
  * extend this trait.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="JUnitSuite.html">detailed
- * overview of <code>JUnitSuite</code></a>.
+ * See the documentation of the class for a <a href="JUnit5Suite.html">detailed
+ * overview of <code>JUnit5Suite</code></a>.
  * </p>
  *
  * @author Bill Venners
+ * @author Chua Chee Seng
  */
 trait JUnit5SuiteLike extends Suite with AssertionsForJUnit5 { thisSuite =>
 
@@ -218,7 +219,7 @@ trait JUnit5SuiteLike extends Suite with AssertionsForJUnit5 { thisSuite =>
   }
 
   /**
-   * Overrides to use JUnit 4 to run the test(s).
+   * Overrides to use JUnit 5 to run the test(s).
    *
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
@@ -234,7 +235,7 @@ trait JUnit5SuiteLike extends Suite with AssertionsForJUnit5 { thisSuite =>
     val status = new StatefulStatus
 
     if (!filter.tagsToInclude.isDefined) {
-      // junit 5 references:
+      // JUnit 5 references:
       // https://junit.org/junit5/docs/current/api/org.junit.platform.engine/org/junit/platform/engine/TestEngine.html
       // https://junit.org/junit5/docs/current/api/org.junit.platform.engine/org/junit/platform/engine/EngineExecutionListener.html
       // https://junit.org/junit5/docs/current/api/org.junit.platform.console/org/junit/platform/console/ConsoleLauncher.html
@@ -266,10 +267,7 @@ trait JUnit5SuiteLike extends Suite with AssertionsForJUnit5 { thisSuite =>
   /**
    * Suite style name.
    *
-   * @return <code>JUnitSuite</code>
+   * @return <code>JUnit5Suite</code>
    */
-  final override val styleName: String = "JUnitSuite"
-
-  // verifySomething(org.scalatest.junit.helpers.HappySuite)
-  // Description.displayName of a test report has the form <testMethodName>(<suiteClassName>)
+  final override val styleName: String = "JUnit5Suite"
 }

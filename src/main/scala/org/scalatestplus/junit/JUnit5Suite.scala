@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2022 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,14 @@
  */
 package org.scalatestplus.junit;
 
-
-
-
 /**
- * A suite of tests that can be run with either JUnit or ScalaTest. This class allows you to write JUnit 4 tests
+ * A suite of tests that can be run with either JUnit or ScalaTest. This class allows you to write JUnit 5 tests
  * with ScalaTest's more concise assertion syntax as well as JUnit's assertions (<code>assertEquals</code>, etc.).
  * You create tests by defining methods that are annotated with <code>Test</code>, and can create fixtures with
  * methods annotated with <code>Before</code> and <code>After</code>. For example:
  *
  * <pre class="stHighlight">
- * import org.scalatest.junit.JUnitSuite
+ * import org.scalatest.junit.JUnit5Suite
  * import scala.collection.mutable.ListBuffer
  * import _root_.org.junit.Test
  * import _root_.org.junit.Before
@@ -56,8 +53,8 @@ package org.scalatestplus.junit;
  * </pre>
  *
  * <p>
- * To execute <code>JUnitSuite</code>s with ScalaTest's <code>Runner</code>, you must include JUnit's jar file on the class path or runpath.
- * This version of <code>JUnitSuite</code> was tested with JUnit version 4.10.
+ * To execute <code>JUnit5Suite</code>s with ScalaTest's <code>Runner</code>, you must include JUnit 5's jar file on the class path or runpath.
+ * This version of <code>JUnit5Suite</code> was tested with JUnit version 5.9.
  * </p>
  *
  * <p>
@@ -67,5 +64,6 @@ package org.scalatestplus.junit;
  * @author Bill Venners
  * @author Daniel Watson
  * @author Joel Neely
+ * @author Chua Chee Seng
  */
 class JUnit5Suite extends JUnit5SuiteLike
