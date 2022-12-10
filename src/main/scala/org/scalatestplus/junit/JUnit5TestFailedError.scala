@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2022 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.scalatest.exceptions.StackDepthException
 import org.scalactic.ArrayHelper.deep
 
 /**
- * Exception that indicates a test failed.
+ * Exception that indicates a test failed in JUnit 5.
  *
  * <p>
  * The purpose of this exception is to encapsulate the same stack depth information provided by
@@ -44,8 +44,8 @@ import org.scalactic.ArrayHelper.deep
  * fails for any other reason, either the test code or the application being tested threw an unexpected
  * exception, that is considered an <em>error</em> in JUnit. This class differs from
  * <a href="../exceptions/TestFailedException.html"><code>TestFailedException</code></a> in that it extends
- * <code>junit.framework.AssertionFailedError</code>. Instances of this class are thrown by the
- * assertions provided by <a href="AssertionsForJUnit.html"><code>AssertionsForJUnit</code></a>.
+ * <code>org.opentest4j.AssertionFailedError</code>. Instances of this class are thrown by the
+ * assertions provided by <a href="AssertionsForJUnit5.html"><code>AssertionsForJUnit5</code></a>.
  * </p>
  *
  * <p>
@@ -53,10 +53,10 @@ import org.scalactic.ArrayHelper.deep
  * is that only thrown <code>junit.framework.AssertionFailedError</code>s were considered failures. Any other
  * exception type was considered an error. The exception type thrown by the JUnit 3 assertion methods declared
  * in <code>junit.framework.Assert</code> (such as <code>assertEquals</code>, <code>assertTrue</code>,
- * and <code>fail</code>) was, therefore, <code>AssertionFailedError</code>. In JUnit 4, <code>AssertionFailedError</code>
+ * and <code>fail</code>) was, therefore, <code>AssertionFailedError</code>. In JUnit 4, <code>junit.framework.AssertionFailedError</code>
  * was made to extend <code>java.lang.AssertionError</code>, and the distinction between failures and errors
- * was essentially dropped. However, some tools that integrate with JUnit carry on this distinction, so even
- * if you are using JUnit 4 you may want to use <code>AssertionsForJUnit</code>.
+ * was essentially dropped. In JUnit 5, <code>org.opentest4j.AssertionFailedError</code> is used instead as common 
+ * base class for test-related AssertionErrors. 
  * </p>
  *
  * @param message an optional detail message for this <code>TestFailedException</code>.
