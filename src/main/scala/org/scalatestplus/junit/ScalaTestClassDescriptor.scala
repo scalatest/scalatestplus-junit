@@ -19,7 +19,7 @@ import org.junit.platform.engine.support.descriptor.{AbstractTestDescriptor, Cla
 import org.junit.platform.engine.{TestDescriptor, UniqueId}
 
 /**
- * <code>ClassDescriptor</code> for ScalaTest suite.
+ * <code>TestDescriptor</code> for ScalaTest suite.
  *
  * @param parent The parent descriptor.
  * @param theUniqueId The unique ID.
