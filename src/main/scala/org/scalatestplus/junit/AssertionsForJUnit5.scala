@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2022 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,20 @@
 package org.scalatestplus.junit
 
 import org.scalatest._
-import _root_.junit.framework.AssertionFailedError
+import org.opentest4j.AssertionFailedError
 import org.scalactic._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.{StackDepthException, TestCanceledException}
 
 /**
- * Trait that contains ScalaTest's basic assertion methods, suitable for use with JUnit.
+ * Trait that contains ScalaTest's basic assertion methods, suitable for use with JUnit 5.
  *
  * <p>
  * The assertion methods provided in this trait look and behave exactly like the ones in
  * <a href="../Assertions.html"><code>Assertions</code></a>, except instead of throwing
  * <a href="../exceptions/TestFailedException.html"><code>TestFailedException</code></a> they throw
- * <a href="JUnitTestFailedError.html"><code>JUnitTestFailedError</code></a>,
- * which extends <code>junit.framework.AssertionFailedError</code>.
+ * <a href="JUnit5TestFailedError.html"><code>JUnit5TestFailedError</code></a>,
+ * which extends <code>org.opentest4j.AssertionFailedError</code>.
  *
  * <p>
  * JUnit 3 (release 3.8 and earlier) distinguishes between <em>failures</em> and <em>errors</em>.
@@ -43,7 +43,7 @@ import org.scalatest.exceptions.{StackDepthException, TestCanceledException}
  * </p>
  *
  * <p>
- * In JUnit 4, <code>AssertionFailedError</code> was made to extend <code>java.lang.AssertionError</code>,
+ * In JUnit 4, <code>junit.framework.AssertionFailedError</code> was made to extend <code>java.lang.AssertionError</code>,
  * and the distinction between failures and errors was essentially dropped. However, some tools that integrate
  * with JUnit carry on this distinction, so even if you are using JUnit 4 you may want to use this
  * <code>AssertionsForJUnit</code> trait instead of plain-old ScalaTest
@@ -51,51 +51,14 @@ import org.scalatest.exceptions.{StackDepthException, TestCanceledException}
  * </p>
  *
  * <p>
- * To use this trait in a JUnit 3 <code>TestCase</code>, you can mix it into your <code>TestCase</code> class, like this:
+ * In JUnit 5, <code>org.opentest4j.AssertionFailedError</code> is used as test-related AssertionError instead.
  * </p>
  *
- * <pre class="stHighlight">
- * import junit.framework.TestCase
- * import org.scalatest.junit.AssertionsForJUnit
- *
- * class MyTestCase extends TestCase with AssertionsForJUnit {
- *
- *   def testSomething() {
- *     assert("hi".charAt(1) === 'i')
- *   }
- *
- *   // ...
- * }
- * </pre>
- *
- * <p>
- * You can alternatively import the methods defined in this trait.
- * </p>
- *
- * <pre class="stHighlight">
- * import junit.framework.TestCase
- * import org.scalatest.junit.AssertionsForJUnit._
- *
- * class MyTestCase extends TestCase {
- *
- *   def testSomething() {
- *     assert("hi".charAt(1) === 'i')
- *   }
- *
- *   // ...
- * }
- * </pre>
- *
- * <p>
- * For details on the importing approach, see the documentation
- * for the <a href="AssertionsForJUnit$.html"><code>AssertionsForJUnit</code> companion object</a>.
- * For the details on the <code>AssertionsForJUnit</code> syntax, see the Scaladoc documentation for
- * <a href="../Assertions.html"><code>org.scalatest.Assertions</code></a>
- * </p>
  *
  * @author Bill Venners
+ * @author Chua Chee Seng
  */
-trait AssertionsForJUnit5 extends VersionSpecificAssertionsForJUnit {
+trait AssertionsForJUnit5 extends VersionSpecificAssertionsForJUnit5 {
 
   private[org] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, differences: scala.collection.immutable.IndexedSeq[String]): Throwable = {
     new JUnit5TestFailedError(optionalMessage, optionalCause, pos, None)
@@ -115,62 +78,37 @@ trait AssertionsForJUnit5 extends VersionSpecificAssertionsForJUnit {
       case _ => { e => message }
     }
   }
-
-  /*
-   private[scalatest] override def newAssertionFailedException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable = {
-
-     val assertionFailedError =
-       optionalMessage match {
-         case None => new AssertionFailedError
-         case Some(message) => new AssertionFailedError(message.toString)
-       }
-
-     for (cause <- optionalCause)
-       assertionFailedError.initCause(cause)
-
-     assertionFailedError
-   }  */
 }
 
 /**
- * Companion object that facilitates the importing of <code>AssertionsForJUnit</code> members as
- * an alternative to mixing it in. One use case is to import <code>AssertionsForJUnit</code> members so you can use
+ * Companion object that facilitates the importing of <code>AssertionsForJUnit5</code> members as
+ * an alternative to mixing it in. One use case is to import <code>AssertionsForJUnit5</code> members so you can use
  * them in the Scala interpreter:
  *
  * <pre>
- * $ scala -cp junit3.8.2/junit.jar:../target/jar_contents
- * Welcome to Scala version 2.7.5.final (Java HotSpot(TM) Client VM, Java 1.5.0_16).
- * Type in expressions to have them evaluated.
- * Type :help for more information.
+ * sbt:junit-5.9> console
+ * [info] Starting scala interpreter...
+ * Welcome to Scala 2.13.10 (OpenJDK 64-Bit Server VM, Java 1.8.0_352).
+ * Type in expressions for evaluation. Or try :help.
  *
- * scala> import org.scalatest.junit.AssertionsForJUnit._
- * import org.scalatest.junit.AssertionsForJUnit._
+ * scala> import org.scalatestplus.junit.AssertionsForJUnit5._
+ * import org.scalatestplus.junit.AssertionsForJUnit5._
  *
  * scala> assert(1 === 2)
- * junit.framework.AssertionFailedError: 1 did not equal 2
- * 	at org.scalatest.junit.AssertionsForJUnit$class.assert(AssertionsForJUnit.scala:353)
- * 	at org.scalatest.junit.AssertionsForJUnit$.assert(AssertionsForJUnit.scala:672)
- * 	at .<init>(<console>:7)
- * 	at .<clinit>(<console>)
- * 	at RequestResult$.<init>(<console>:3)
- * 	at RequestResult$.<clinit>(<console>)
- * 	at RequestResult$result(<consol...
- * scala> expect(3) { 1 + 3 }
- * junit.framework.AssertionFailedError: Expected 3, but got 4
- * 	at org.scalatest.junit.AssertionsForJUnit$class.expect(AssertionsForJUnit.scala:563)
- * 	at org.scalatest.junit.AssertionsForJUnit$.expect(AssertionsForJUnit.scala:672)
- * 	at .<init>(<console>:7)
- * 	at .<clinit>(<console>)
- * 	at RequestResult$.<init>(<console>:3)
- * 	at RequestResult$.<clinit>(<console>)
- * 	at RequestResult$result(<co...
+ * org.scalatestplus.junit.JUnit5TestFailedError: 1 did not equal 2
+ *   at org.scalatestplus.junit.AssertionsForJUnit5.newAssertionFailedException(AssertionsForJUnit5.scala:64)
+ *   at org.scalatestplus.junit.AssertionsForJUnit5.newAssertionFailedException$(AssertionsForJUnit5.scala:63)
+ *   at org.scalatestplus.junit.AssertionsForJUnit5$.newAssertionFailedException(AssertionsForJUnit5.scala:122)
+ *   at org.scalatestplus.junit.AssertionsForJUnit5$AssertionsHelper.macroAssert(AssertionsForJUnit5.scala:159)
+ *   ... 35 elided
  * scala> val caught = intercept[StringIndexOutOfBoundsException] { "hi".charAt(-1) }
- * caught: StringIndexOutOfBoundsException = java.lang.StringIndexOutOfBoundsException: String index out of range: -1
+ * val caught: StringIndexOutOfBoundsException = java.lang.StringIndexOutOfBoundsException: String index out of range: -1
  * </pre>
  *
  * @author Bill Venners
+ * @author Chua Chee Seng
  */
-object AssertionsForJUnit5 extends AssertionsForJUnit {
+object AssertionsForJUnit5 extends AssertionsForJUnit5 {
 
   import Requirements._
 

@@ -62,7 +62,7 @@ import org.scalactic.ArrayHelper.deep
  * @param message an optional detail message for this <code>TestFailedException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestFailedException</code> to be thrown.
  * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
- * @param payload an optional payload, which ScalaTest will include in a resulting <code>JUnitTestFailedError</code> event
+ * @param payload an optional payload, which ScalaTest will include in a resulting <code>JUnit5TestFailedError</code> event
  *
  * @throws NullArgumentException if either <code>message</code> or <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
  *
@@ -73,7 +73,7 @@ class JUnit5TestFailedError(
                             val cause: Option[Throwable],
                             val posOrStackDepth: Either[source.Position, Int],
                             val payload: Option[Any]
-                          ) extends AssertionFailedError(if (message.isDefined) message.get else "") with StackDepth with ModifiableMessage[JUnitTestFailedError]  with PayloadField with ModifiablePayload[JUnitTestFailedError] {
+                          ) extends AssertionFailedError(if (message.isDefined) message.get else "") with StackDepth with ModifiableMessage[JUnit5TestFailedError]  with PayloadField with ModifiablePayload[JUnit5TestFailedError] {
 
   // TODO: CHange above to a message.getOrElse(""), and same in other exceptions most likely
   // TODO: Possibly change stack depth to stackDepthFun like in TFE, consider messageFun like in TDE
@@ -121,10 +121,15 @@ class JUnit5TestFailedError(
   * Throws <code>IllegalStateException</code>, because <code>StackDepthException</code>s are
   * always initialized with a cause passed to the constructor of superclass <code>
   */
-  override final def initCause(throwable: Throwable): Throwable = { throw new IllegalStateException }
+  override final def initCause(throwable: Throwable): Throwable = { 
+    if (throwable != null && cause.isDefined)
+      throw new IllegalStateException
+    else
+      super.initCause(throwable)   
+  }
 
   /**
-   * Create a <code>JUnitTestFailedError</code> with specified stack depth and no detail message or cause.
+   * Create a <code>JUnit5TestFailedError</code> with specified stack depth and no detail message or cause.
    *
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
@@ -132,9 +137,9 @@ class JUnit5TestFailedError(
   def this(failedCodeStackDepth: Int) = this(None, None, Right(failedCodeStackDepth), None)
 
   /**
-   * Create a <code>JUnitTestFailedError</code> with a specified stack depth and detail message.
+   * Create a <code>JUnit5TestFailedError</code> with a specified stack depth and detail message.
    *
-   * @param message A detail message for this <code>JUnitTestFailedError</code>.
+   * @param message A detail message for this <code>JUnit5TestFailedError</code>.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
@@ -151,11 +156,11 @@ class JUnit5TestFailedError(
     )
 
   /**
-   * Create a <code>JUnitTestFailedError</code> with the specified stack depth and cause.  The
+   * Create a <code>JUnit5TestFailedError</code> with the specified stack depth and cause.  The
    * <code>message</code> field of this exception object will be initialized to
    * <code>if (cause.getMessage == null) "" else cause.getMessage</code>.
    *
-   * @param cause the cause, the <code>Throwable</code> that caused this <code>JUnitTestFailedError</code> to be thrown.
+   * @param cause the cause, the <code>Throwable</code> that caused this <code>JUnit5TestFailedError</code> to be thrown.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>.
@@ -172,15 +177,15 @@ class JUnit5TestFailedError(
     )
 
   /**
-   * Create a <code>JUnitTestFailedError</code> with the specified stack depth, detail
+   * Create a <code>JUnit5TestFailedError</code> with the specified stack depth, detail
    * message, and cause.
    *
    * <p>Note that the detail message associated with cause is
    * <em>not</em> automatically incorporated in this throwable's detail
    * message.
    *
-   * @param message A detail message for this <code>JUnitTestFailedError</code>.
-   * @param cause the cause, the <code>Throwable</code> that caused this <code>JUnitTestFailedError</code> to be thrown.
+   * @param message A detail message for this <code>JUnit5TestFailedError</code>.
+   * @param cause the cause, the <code>Throwable</code> that caused this <code>JUnit5TestFailedError</code> to be thrown.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    * @throws NullArgumentException if either <code>message</code> or <code>cause</code> is <code>null</code>.
@@ -200,14 +205,14 @@ class JUnit5TestFailedError(
     )
 
   /**
-   * Returns an exception of class <code>JUnitTestFailedError</code> with <code>failedExceptionStackDepth</code> set to 0 and
+   * Returns an exception of class <code>JUnit5TestFailedError</code> with <code>failedExceptionStackDepth</code> set to 0 and
    * all frames above this stack depth severed off. This can be useful when working with tools (such as IDEs) that do not
    * directly support ScalaTest. (Tools that directly support ScalaTest can use the stack depth information delivered
    * in the StackDepth exceptions.)
    */
-  def severedAtStackDepth: JUnitTestFailedError = {
+  def severedAtStackDepth: JUnit5TestFailedError = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new JUnitTestFailedError(message, cause, posOrStackDepth, payload)
+    val e = new JUnit5TestFailedError(message, cause, posOrStackDepth, payload)
     e.setStackTrace(truncated)
     e
   }
@@ -218,10 +223,10 @@ class JUnit5TestFailedError(
    * the current detail message to the passed function, <code>fun</code>.
    *
    * @param fun A function that, given the current optional detail message, will produce
-   * the modified optional detail message for the result instance of <code>JUnitTestFailedError</code>.
+   * the modified optional detail message for the result instance of <code>JUnit5TestFailedError</code>.
    */
-  def modifyMessage(fun: Option[String] => Option[String]): JUnitTestFailedError = {
-    val mod = new JUnitTestFailedError(fun(message), cause, posOrStackDepth, payload)
+  def modifyMessage(fun: Option[String] => Option[String]): JUnit5TestFailedError = {
+    val mod = new JUnit5TestFailedError(fun(message), cause, posOrStackDepth, payload)
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -232,11 +237,11 @@ class JUnit5TestFailedError(
    * the current payload option to the passed function, <code>fun</code>.
    *
    * @param fun A function that, given the current optional payload, will produce
-   * the modified optional payload for the result instance of <code>JUnitTestFailedError</code>.
+   * the modified optional payload for the result instance of <code>JUnit5TestFailedError</code>.
    */
-  def modifyPayload(fun: Option[Any] => Option[Any]): JUnitTestFailedError = {
+  def modifyPayload(fun: Option[Any] => Option[Any]): JUnit5TestFailedError = {
     val currentPayload = payload
-    val mod = new JUnitTestFailedError(message, cause, posOrStackDepth, fun(currentPayload))
+    val mod = new JUnit5TestFailedError(message, cause, posOrStackDepth, fun(currentPayload))
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -244,17 +249,17 @@ class JUnit5TestFailedError(
   /**
    * Indicates whether this object can be equal to the passed object.
    */
-  def canEqual(other: Any): Boolean = other.isInstanceOf[JUnitTestFailedError]
+  def canEqual(other: Any): Boolean = other.isInstanceOf[JUnit5TestFailedError]
 
   /**
    * Indicates whether this object is equal to the passed object. If the passed object is
-   * a <code>JUnitTestFailedError</code>, equality requires equal <code>message</code>,
+   * a <code>JUnit5TestFailedError</code>, equality requires equal <code>message</code>,
    * <code>cause</code>, and <code>failedCodeStackDepth</code> fields, as well as equal
    * return values of <code>getStackTrace</code>.
    */
   override def equals(other: Any): Boolean =
     other match {
-      case that: JUnitTestFailedError =>
+      case that: JUnit5TestFailedError =>
         (that canEqual this) &&
           message == that.message &&
           cause == that.cause &&
