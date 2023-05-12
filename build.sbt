@@ -5,7 +5,7 @@ name := "junit-4.13"
 
 organization := "org.scalatestplus"
 
-version := "3.2.15.0"
+version := "3.2.16.0"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -46,12 +46,12 @@ Compile / unmanagedSourceDirectories ++= {
 }
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest-core" % "3.2.15",
+  "org.scalatest" %% "scalatest-core" % "3.2.16",
   "junit" % "junit" % "4.13.2", 
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.15" % "test", 
-  "org.scalatest" %% "scalatest-funspec" % "3.2.15" % "test", 
-  "org.scalatest" %% "scalatest-funsuite" % "3.2.15" % "test", 
-  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.15" % "test"
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.16" % "test", 
+  "org.scalatest" %% "scalatest-funspec" % "3.2.16" % "test", 
+  "org.scalatest" %% "scalatest-funsuite" % "3.2.16" % "test", 
+  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.16" % "test"
 )
 
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
