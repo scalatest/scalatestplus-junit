@@ -5,7 +5,7 @@ name := "junit-4.13"
 
 organization := "org.scalatestplus"
 
-version := "3.2.17.0"
+version := "3.3.0.0-alpha.1"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -26,14 +26,13 @@ developers := List(
   )
 )
 
-scalaVersion := "2.13.11"
+scalaVersion := "2.13.12"
 
 crossScalaVersions := List(
-  "2.10.7", 
   "2.11.12", 
   "2.12.17", 
-  "2.13.11", 
-  "3.1.3"
+  "2.13.12", 
+  "3.3.1"
 )
 
 /** Add src/main/scala-{2|3} to Compile / unmanagedSourceDirectories */
@@ -46,12 +45,12 @@ Compile / unmanagedSourceDirectories ++= {
 }
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest-core" % "3.2.17",
+  "org.scalatest" %% "scalatest-core" % "3.3.0-alpha.1",
   "junit" % "junit" % "4.13.2", 
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.17" % "test", 
-  "org.scalatest" %% "scalatest-funspec" % "3.2.17" % "test", 
-  "org.scalatest" %% "scalatest-funsuite" % "3.2.17" % "test", 
-  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.17" % "test"
+  "org.scalatest" %% "scalatest-wordspec" % "3.3.0-alpha.1" % "test", 
+  "org.scalatest" %% "scalatest-funspec" % "3.3.0-alpha.1" % "test", 
+  "org.scalatest" %% "scalatest-funsuite" % "3.3.0-alpha.1" % "test", 
+  "org.scalatest" %% "scalatest-shouldmatchers" % "3.3.0-alpha.1" % "test"
 )
 
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
