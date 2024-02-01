@@ -1,8 +1,11 @@
+import java.io.PrintWriter
+import scala.io.Source
+
 name := "junit-4.13"
 
 organization := "org.scalatestplus"
 
-version := "3.3.0.0-SNAP3"
+version := "3.3.0.0-alpha.1"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -23,14 +26,13 @@ developers := List(
   )
 )
 
-scalaVersion := "2.13.4"
+scalaVersion := "2.13.12"
 
 crossScalaVersions := List(
-  "2.10.7", 
   "2.11.12", 
-  "2.12.12", 
-  "2.13.4", 
-  "3.0.0-M2"
+  "2.12.17", 
+  "2.13.12", 
+  "3.3.1"
 )
 
 /** Add src/main/scala-{2|3} to Compile / unmanagedSourceDirectories */
@@ -43,14 +45,13 @@ Compile / unmanagedSourceDirectories ++= {
 }
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest-core" % "3.3.0-SNAP3",
-  "junit" % "junit" % "4.13", 
-  "org.scalatest" %% "scalatest-wordspec" % "3.3.0-SNAP3" % "test", 
-  "org.scalatest" %% "scalatest-funspec" % "3.3.0-SNAP3" % "test", 
-  "org.scalatest" %% "scalatest-funsuite" % "3.3.0-SNAP3" % "test", 
-  "org.scalatest" %% "scalatest-shouldmatchers" % "3.3.0-SNAP3" % "test"
+  "org.scalatest" %% "scalatest-core" % "3.3.0-alpha.1",
+  "junit" % "junit" % "4.13.2", 
+  "org.scalatest" %% "scalatest-wordspec" % "3.3.0-alpha.1" % "test", 
+  "org.scalatest" %% "scalatest-funspec" % "3.3.0-alpha.1" % "test", 
+  "org.scalatest" %% "scalatest-funsuite" % "3.3.0-alpha.1" % "test", 
+  "org.scalatest" %% "scalatest-shouldmatchers" % "3.3.0-alpha.1" % "test"
 )
-Test / scalacOptions ++= (if (isDotty.value) Seq("-language:implicitConversions") else Nil)
 
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
 import scala.xml.transform.{RewriteRule, RuleTransformer}
@@ -68,7 +69,7 @@ pomPostProcess := { (node: XmlNode) =>
   }).transform(node).head
 }
 
-testOptions in Test :=
+Test / testOptions :=
   Seq(
     Tests.Argument(TestFrameworks.ScalaTest,
       "-m", "org.scalatestplus.junit",
@@ -103,7 +104,7 @@ publishTo := {
 
 publishMavenStyle := true
 
-publishArtifact in Test := false
+Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
 
@@ -120,6 +121,39 @@ pomExtra := (
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
 // Temporary disable publishing of doc in dotty, can't get it to build.
-publishArtifact in (Compile, packageDoc) := !scalaBinaryVersion.value.startsWith("3.")
+Compile / packageDoc / publishArtifact := !scalaBinaryVersion.value.startsWith("3")
 
-scalacOptions in (Compile, doc) := Seq("-doc-title", s"ScalaTest + JUnit ${version.value}")
+def docTask(docDir: File, resDir: File, projectName: String): File = {
+  val docLibDir = docDir / "lib"
+  val htmlSrcDir = resDir / "html"
+  val cssFile = docLibDir / "template.css"
+  val addlCssFile = htmlSrcDir / "addl.css"
+
+  val css = Source.fromFile(cssFile).mkString
+  val addlCss = Source.fromFile(addlCssFile).mkString
+
+  if (!css.contains("pre.stHighlighted")) {
+    val writer = new PrintWriter(cssFile)
+
+    try {
+      writer.println(css)
+      writer.println(addlCss)
+    }
+    finally { writer.close }
+  }
+
+  if (projectName.contains("scalatest")) {
+    (htmlSrcDir * "*.gif").get.foreach { gif =>
+      IO.copyFile(gif, docLibDir / gif.name)
+    }
+  }
+  docDir
+}
+
+Compile / doc  := docTask((Compile / doc).value,
+                          (Compile / sourceDirectory).value,
+                          name.value)
+
+Compile / doc / scalacOptions := Seq("-doc-title", s"ScalaTest + JUnit ${version.value}", 
+                                       "-sourcepath", baseDirectory.value.getAbsolutePath(), 
+                                       "-doc-source-url", s"https://github.com/scalatest/releases-source/blob/main/scalatestplus-junit/${version.value}€{FILE_PATH}.scala")

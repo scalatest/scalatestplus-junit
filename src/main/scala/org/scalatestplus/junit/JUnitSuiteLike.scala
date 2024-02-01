@@ -249,13 +249,6 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
     status.setCompleted()
     status
   }
-  
-  /**
-   * Suite style name.
-   *
-   * @return <code>JUnitSuite</code>
-   */
-  final override val styleName: String = "JUnitSuite"
 
 // verifySomething(org.scalatest.junit.helpers.HappySuite)
 // Description.displayName of a test report has the form <testMethodName>(<suiteClassName>)

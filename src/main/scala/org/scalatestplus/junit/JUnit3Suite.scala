@@ -264,13 +264,6 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
     status.setCompleted()
     status
   }
-  
-  /**
-   * Suite style name.
-   *
-   * @return <code>JUnit3Suite</code>
-   */
-  final override val styleName: String = "JUnit3Suite"
     
   final override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = 
     new TestData {

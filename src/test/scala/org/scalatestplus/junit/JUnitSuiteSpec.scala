@@ -145,7 +145,7 @@ class JUnitSuiteSpec extends funspec.AnyFunSpec {
       TestWasCalledSuite.reinitialize()
 
       val a = new TestWasCalledSuite
-      a.run(None, Args(SilentReporter, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(SilentReporter, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker))
       assert(!TestWasCalledSuite.theDoThisCalled)
       assert(!TestWasCalledSuite.theDoThatCalled)
     }

@@ -202,4 +202,6 @@ class JUnitWrapperSuite(junitClassName: String, loader: ClassLoader) extends Sui
   override protected final def runTest(testName: String, args: Args): Status = {
         throw new UnsupportedOperationException
   }
+
+  override def suiteId: String = junitClassName
 }
