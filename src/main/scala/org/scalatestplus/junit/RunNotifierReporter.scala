@@ -61,11 +61,7 @@ private[junit] class RunNotifierReporter(runNotifier: RunNotifier) extends Repor
         runNotifier.fireTestStarted(Description.createSuiteDescription(testDescriptionName(suiteName, suiteClassName, testName)))
 
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, analysis, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
-        val throwableOrNull =
-          throwable match {
-            case Some(t) => t
-            case None => null // Yuck. Not sure if the exception passed to new Failure can be null, but it could be given this code. Usually throwable would be defined.
-          }
+        val throwableOrNull = throwable.orNull // Yuck. Not sure if the exception passed to new Failure can be null, but it could be given this code. Usually throwable would be defined.
         val description = Description.createSuiteDescription(testDescriptionName(suiteName, suiteClassName, testName))
         runNotifier.fireTestFailure(new Failure(description, throwableOrNull))
         runNotifier.fireTestFinished(description)
@@ -76,27 +72,23 @@ private[junit] class RunNotifierReporter(runNotifier: RunNotifier) extends Repor
       case TestIgnored(ordinal, suiteName, suiteId, suiteClassName, testName, testText, formatter, location, payload, threadName, timeStamp) => 
         runNotifier.fireTestIgnored(Description.createSuiteDescription(testDescriptionName(suiteName, suiteClassName, testName)))
 
-// TODO: I dont see TestCanceled here. Probably need to add it
-      // Closest thing we can do with pending is report an ignored test
+      case TestCanceled(ordering, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunner, payload, threadName, timeStamp) =>
+        val throwableOrNull = throwable.orNull // Yuck. Not sure if the exception passed to new Failure can be null, but it could be given this code. Usually throwable would be defined.
+        val description = Description.createSuiteDescription(testDescriptionName(suiteName, suiteClassName, testName))
+        runNotifier.fireTestAssumptionFailed(new Failure(description, throwableOrNull))
+        runNotifier.fireTestFinished(description)
+
       case TestPending(ordinal, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, duration, formatter, location, payload, threadName, timeStamp) =>
         runNotifier.fireTestIgnored(Description.createSuiteDescription(testDescriptionName(suiteName, suiteClassName, testName)))
 
-      case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
-        val throwableOrNull =
-          throwable match {
-            case Some(t) => t
-            case None => null // Yuck. Not sure if the exception passed to new Failure can be null, but it could be given this code. Usually throwable would be defined.
-          }
+      case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+        val throwableOrNull = throwable.orNull // Yuck. Not sure if the exception passed to new Failure can be null, but it could be given this code. Usually throwable would be defined.
         val description = Description.createSuiteDescription(suiteDescriptionName(suiteName, suiteClassName))
         runNotifier.fireTestFailure(new Failure(description, throwableOrNull)) // Best we can do in JUnit, as far as I know
         runNotifier.fireTestFinished(description)
 
-      case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
-        val throwableOrNull =
-          throwable match {
-            case Some(t) => t
-            case None => null // Yuck. Not sure if the exception passed to new Failure can be null, but it could be given this code. Usually throwable would be defined.
-          }
+      case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) =>
+        val throwableOrNull = throwable.orNull // Yuck. Not sure if the exception passed to new Failure can be null, but it could be given this code. Usually throwable would be defined.
         val possiblyEmptyMessage = messageOrThrowablesDetailMessage(message, throwable)
         val description = Description.createSuiteDescription(Resources.runAborted() + " " + possiblyEmptyMessage)
         runNotifier.fireTestFailure(new Failure(description, throwableOrNull)) // Best we can do in JUnit, as far as I know

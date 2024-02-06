@@ -16,6 +16,7 @@
 package org.scalatestplus.junit;
 
 import junit.framework.TestCase;
+import org.junit.Assume;
 
 public class JUnit3TestCase extends TestCase {
 
