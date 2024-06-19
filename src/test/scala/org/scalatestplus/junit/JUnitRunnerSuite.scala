@@ -88,7 +88,7 @@ package org.scalatestplus.junit {
     // Suite to be filtered out by the name filter
     //
     @RunWith(classOf[JUnitRunner])
-    class FilteredOutSuite extends FunSuite with BeforeAndAfterAll {
+    class FilteredOutSuite extends funsuite.AnyFunSuite with BeforeAndAfterAll {
       test("JUnit ran this OK!") {
         assert(1 === 1)
       }
@@ -98,7 +98,7 @@ package org.scalatestplus.junit {
     // Suite not to be filtered by the name filter
     //
     @RunWith(classOf[JUnitRunner])
-    class FilteredInSuite extends FunSuite with BeforeAndAfterAll {
+    class FilteredInSuite extends funsuite.AnyFunSuite with BeforeAndAfterAll {
       test("JUnit ran this OK!") {
         assert(1 === 1)
       }
@@ -167,16 +167,14 @@ package org.scalatestplus.junit {
       assert(result.getIgnoreCount === kerblooeySuite.ignoreCount)
     }
 
-    test("Test a suite can be filtered by name" +
-      "as the runner implements filterable now")
-    {
-      val runNotifier =
-        new RunNotifier {
-          var ran: List[Description] = Nil
-          override def fireTestFinished(description: Description): Unit = {
-            ran = description :: ran
-          }
+    test("Test a suite can be filtered by name as the runner implements filterable now") {
+      class RanRunNotifier extends RunNotifier {
+        var ran: List[Description] = Nil
+        override def fireTestFinished(description: Description): Unit = {
+          ran = description :: ran
         }
+      }
+      val runNotifier = new RanRunNotifier()
 
       val runners = (new JUnitRunner(classOf[FilteredOutSuite])) ::
                     (new JUnitRunner(classOf[FilteredInSuite])) :: Nil
