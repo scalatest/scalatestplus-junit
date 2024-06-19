@@ -80,6 +80,29 @@ class RunNotifierSuite extends funsuite.AnyFunSuite {
     assert(runNotifier.passed.get.getDescription.getDisplayName === "theTestName(SuiteClassName)")
   }
 
+  test("report(TestCanceled) generates a fireTestAssumptionFailed invocation") {
+    class MyRunNotifier extends RunNotifier {
+      var methodInvocationCount = 0
+      var passed: Option[Failure] = None
+
+      override def fireTestAssumptionFailed(failure: Failure): Unit = {
+        methodInvocationCount += 1
+        passed = Some(failure)
+      }
+    }
+    val runNotifier = new MyRunNotifier
+
+    val reporter = new RunNotifierReporter(runNotifier)
+    val exception = new IllegalArgumentException
+
+    import scala.language.reflectiveCalls
+
+    reporter(TestCanceled(ordinal, "No msg", "SuiteClassName", "suite ID", Some("fully.qualified.SuiteClassName"), "theTestName", "theTestName", Vector.empty, Some(exception)))
+    assert(runNotifier.passed.get.getDescription.getDisplayName === "theTestName(fully.qualified.SuiteClassName)")
+    reporter(TestCanceled(ordinal, "No msg", "SuiteClassName", "suite ID", None, "theTestName", "theTestName", Vector.empty, Some(exception)))
+    assert(runNotifier.passed.get.getDescription.getDisplayName === "theTestName(SuiteClassName)")
+  }
+
   test("report(TestSucceeded) generates a fireTestFinished invocation") {
     class MyRunNotifier extends RunNotifier {
       var methodInvocationCount = 0
