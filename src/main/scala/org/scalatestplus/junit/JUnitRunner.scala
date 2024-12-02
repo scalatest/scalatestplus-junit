@@ -16,11 +16,14 @@
  */
 package org.scalatestplus.junit
 
-import org.scalatest._
+import org.scalatest.{Args, ConfigMap, DynaTags, Stopper, Suite, Tracker, Filter}
 import org.junit.runner.notification.RunNotifier
 import org.junit.runner.notification.Failure
 import org.junit.runner.Description
 import org.junit.runner.manipulation.{Filter => TestFilter, Filterable, NoTestsRemainException}
+
+import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 /*
  I think that Stopper really should be a no-op, like it is, because the user has
@@ -71,6 +74,8 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    */
   val getDescription = createDescription(suiteToRun)
 
+  private val excludedTests: mutable.Set[String] = mutable.Set()
+
   private def createDescription(suite: Suite): Description = {
     val description = Description.createSuiteDescription(suite.getClass)
     // If we don't add the testNames and nested suites in, we get
@@ -96,12 +101,29 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    */
   def run(notifier: RunNotifier): Unit = {
     try {
+      val includedTests: Set[String] = suiteToRun.testNames.diff(excludedTests)
+      val testTags: Map[String, Map[String, Set[String]]] = Map(
+        suiteToRun.suiteId ->
+          includedTests.map(test => test -> Set("INCLUDE")).toMap
+      )
+      val filter = Filter(
+        tagsToInclude = Some(Set("INCLUDE")),
+        dynaTags = DynaTags(suiteTags = Map.empty, testTags = testTags)
+      )
       // TODO: What should this Tracker be?
-      suiteToRun.run(None, Args(new RunNotifierReporter(notifier),
-                                Stopper.default, Filter(), ConfigMap.empty, None,
-                                new Tracker))
-    }
-    catch {
+      suiteToRun.run(
+        None,
+        Args(
+          new RunNotifierReporter(notifier),
+          Stopper.default,
+          filter,
+          ConfigMap.empty,
+          None,
+          new Tracker,
+          Set.empty
+        )
+      )
+    } catch {
       case e: Exception =>
         notifier.fireTestFailure(new Failure(getDescription, e))
     }
@@ -113,10 +135,16 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    *
    *  @return the expected number of tests that will run when this suite is run
    */
-  override def testCount() = suiteToRun.expectedTestCount(Filter())
+  override def testCount(): Int = suiteToRun.expectedTestCount(Filter())
 
+  @throws(classOf[NoTestsRemainException])
   override def filter(filter: TestFilter): Unit = {
-    if (!filter.shouldRun(getDescription)) throw new NoTestsRemainException
+    getDescription.getChildren.asScala
+      .filter(child => !filter.shouldRun(child))
+      .foreach(child => excludedTests.add(child.getMethodName))
+    if (getDescription.getChildren.isEmpty) {
+      throw new NoTestsRemainException()
+    }
   }
 
 }
