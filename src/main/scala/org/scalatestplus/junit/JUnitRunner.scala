@@ -139,12 +139,12 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
 
   @throws(classOf[NoTestsRemainException])
   override def filter(filter: TestFilter): Unit = {
-    getDescription.getChildren.asScala
-      .filter(child => !filter.shouldRun(child))
-      .foreach(child => excludedTests.add(child.getMethodName))
-    if (getDescription.getChildren.isEmpty) {
-      throw new NoTestsRemainException()
-    }
+    val children = getDescription.getChildren.asScala
+    excludedTests ++= children
+      .filterNot(filter.shouldRun)
+      .map(_.getMethodName)
+
+    if (children.isEmpty) throw new NoTestsRemainException
   }
 
 }
