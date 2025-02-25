@@ -22,6 +22,7 @@ import org.junit.runner.notification.Failure
 import org.junit.runner.Description
 import org.junit.runner.manipulation.{Filter => TestFilter, Filterable, NoTestsRemainException}
 
+import java.util.concurrent.ConcurrentHashMap
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 
@@ -74,7 +75,7 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
    */
   val getDescription = createDescription(suiteToRun)
 
-  private val excludedTests: mutable.Set[String] = mutable.Set()
+  private val excludedTests: mutable.Set[String] = ConcurrentHashMap.newKeySet[String]().asScala
 
   private def createDescription(suite: Suite): Description = {
     val description = Description.createSuiteDescription(suite.getClass)
@@ -104,10 +105,10 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
       val includedTests: Set[String] = suiteToRun.testNames.diff(excludedTests)
       val testTags: Map[String, Map[String, Set[String]]] = Map(
         suiteToRun.suiteId ->
-          includedTests.map(test => test -> Set("INCLUDE")).toMap
+          includedTests.map(test => test -> Set("org.scalatest.Selected")).toMap
       )
       val filter = Filter(
-        tagsToInclude = Some(Set("INCLUDE")),
+        tagsToInclude = Some(Set("org.scalatest.Selected")),
         dynaTags = DynaTags(suiteTags = Map.empty, testTags = testTags)
       )
       // TODO: What should this Tracker be?
