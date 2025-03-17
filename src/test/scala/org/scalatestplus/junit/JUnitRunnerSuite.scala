@@ -103,6 +103,30 @@ package org.scalatestplus.junit {
         assert(1 === 1)
       }
     }
+
+    class MethodExclusionFilter(methodNamePattern: String) extends TestFilter {
+      override def shouldRun(description: Description): Boolean = {
+        !description.getMethodName().contains(methodNamePattern)
+      }
+
+      override def describe(): String = s"Excludes tests with method names containing: '$methodNamePattern'"
+    }
+
+    @RunWith(classOf[JUnitRunner])
+    class MethodFilterTargetSuite extends funsuite.AnyFunSuite {
+
+      test("JUnit ran this OK!") {
+        assert(1 === 1)
+      }
+
+      test("should pass filter and execute") {
+        assert(2 === 2)
+      }
+
+      test("should be filtered out") {
+        assert(3 === 5)
+      }
+    }
   }
 
   import org.junit.runner.Description
@@ -112,6 +136,7 @@ package org.scalatestplus.junit {
   import org.scalatestplus.junit.helpers.EasySuite
   import org.scalatestplus.junit.helpers.KerblooeySuite
   import org.scalatestplus.junit.helpers.{FilteredInSuite, FilteredOutSuite, NameFilter}
+  import org.scalatestplus.junit.helpers.{MethodExclusionFilter, MethodFilterTargetSuite}
   import scala.util.Try
 
   class JUnitRunnerSuite extends funsuite.AnyFunSuite {
@@ -189,6 +214,25 @@ package org.scalatestplus.junit {
       assert(runNotifier.ran.size === 1)
       assert(runNotifier.ran.head.getDisplayName ===
         "JUnit ran this OK!(org.scalatestplus.junit.helpers.FilteredInSuite)")
+    }
+
+    test("Should execute only methods that don't match the filter pattern") {
+      class ExecutedTestsNotifier extends RunNotifier {
+        var executedTests: List[Description] = Nil
+
+        override def fireTestFinished(description: Description): Unit = {
+          executedTests = description :: executedTests
+        }
+      }
+      val runNotifier = new ExecutedTestsNotifier()
+      val runner = new JUnitRunner(classOf[MethodFilterTargetSuite])
+
+      val excludeMethodFilter = new MethodExclusionFilter("should be filtered out")
+
+      runner.filter(excludeMethodFilter)
+      runner.run(runNotifier)
+
+      assert(runNotifier.executedTests.size === 2) // Verifies that only 2 tests ran (one was filtered out)
     }
   }
 }
