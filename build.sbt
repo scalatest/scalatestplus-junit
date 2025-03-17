@@ -26,13 +26,13 @@ developers := List(
   )
 )
 
-scalaVersion := "2.13.13"
+scalaVersion := "2.13.16"
 
 crossScalaVersions := List(
   "2.11.12", 
-  "2.12.19", 
-  "2.13.13", 
-  "3.3.3"
+  "2.12.20", 
+  "2.13.16", 
+  "3.3.5"
 )
 
 /** Add src/main/scala-{2|3} to Compile / unmanagedSourceDirectories */
