@@ -14,12 +14,12 @@ If ScalaTest has saved you time, helped you ship better software, or become a ke
 
 **Usage**
 
-To use it for ScalaTest 3.2.19 and JUnit 4.13: 
+To use it for ScalaTest 3.3.0-RC1 and JUnit 4.13: 
 
 SBT: 
 
 ```
-libraryDependencies += "org.scalatestplus" %% "junit-4-13" % "3.2.19.1" % "test"
+libraryDependencies += "org.scalatestplus" %% "junit-4-13" % "3.3.0.0-RC1" % "test"
 ```
 
 Maven: 
@@ -28,7 +28,7 @@ Maven:
 <dependency>
   <groupId>org.scalatestplus</groupId>
   <artifactId>junit-4-13_3</artifactId>
-  <version>3.2.19.1</version>
+  <version>3.3.0.0-RC1</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -39,4 +39,5 @@ Please use the following commands to publish to Sonatype:
 
 ```
 $ sbt +publishSigned
+$ sbt sonaUpload
 ```
