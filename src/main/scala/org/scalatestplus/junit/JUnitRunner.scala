@@ -120,8 +120,7 @@ final class JUnitRunner(suiteClass: java.lang.Class[_ <: Suite]) extends org.jun
           filter,
           ConfigMap.empty,
           None,
-          new Tracker,
-          Set.empty
+          new Tracker
         )
       )
     } catch {
