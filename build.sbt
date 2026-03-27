@@ -5,7 +5,7 @@ name := "junit-4.13"
 
 organization := "org.scalatestplus"
 
-version := "3.2.19.1"
+version := "3.2.20.0"
 
 homepage := Some(url("https://github.com/scalatest/scalatestplus-junit"))
 
@@ -26,13 +26,13 @@ developers := List(
   )
 )
 
-scalaVersion := "2.13.16"
+scalaVersion := "2.13.18"
 
 crossScalaVersions := List(
   "2.11.12", 
-  "2.12.20", 
-  "2.13.16", 
-  "3.3.5"
+  "2.12.21", 
+  scalaVersion.value, 
+  "3.3.7"
 )
 
 /** Add src/main/scala-{2|3} to Compile / unmanagedSourceDirectories */
@@ -45,12 +45,12 @@ Compile / unmanagedSourceDirectories ++= {
 }
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest-core" % "3.2.19",
+  "org.scalatest" %% "scalatest-core" % "3.2.20",
   "junit" % "junit" % "4.13.2", 
-  "org.scalatest" %% "scalatest-wordspec" % "3.2.19" % "test", 
-  "org.scalatest" %% "scalatest-funspec" % "3.2.19" % "test", 
-  "org.scalatest" %% "scalatest-funsuite" % "3.2.19" % "test", 
-  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.19" % "test"
+  "org.scalatest" %% "scalatest-wordspec" % "3.2.20" % "test", 
+  "org.scalatest" %% "scalatest-funspec" % "3.2.20" % "test", 
+  "org.scalatest" %% "scalatest-funsuite" % "3.2.20" % "test", 
+  "org.scalatest" %% "scalatest-shouldmatchers" % "3.2.20" % "test"
 )
 
 import scala.xml.{Node => XmlNode, NodeSeq => XmlNodeSeq, _}
@@ -97,10 +97,7 @@ OsgiKeys.additionalHeaders:= Map(
   "Bundle-Vendor" -> "Artima, Inc."
 )
 
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-}
+publishTo := localStaging.value
 
 publishMavenStyle := true
 
